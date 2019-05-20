@@ -15,6 +15,7 @@
  */
 package org.springblade.system.entity;
 
+import com.baomidou.mybatisplus.annotation.KeySequence;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -31,6 +32,7 @@ import org.springblade.core.mp.base.BaseEntity;
 @TableName("blade_tenant")
 @EqualsAndHashCode(callSuper = true)
 @ApiModel(value = "Tenant对象", description = "Tenant对象")
+@KeySequence(value = "SEQ_USER", clazz = Integer.class)
 public class Tenant extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;

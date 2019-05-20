@@ -15,6 +15,7 @@
  */
 package org.springblade.system.entity;
 
+import com.baomidou.mybatisplus.annotation.KeySequence;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -31,6 +32,7 @@ import org.springblade.core.mp.base.BaseEntity;
 @TableName("blade_param")
 @EqualsAndHashCode(callSuper = true)
 @ApiModel(value = "Param对象", description = "Param对象")
+@KeySequence(value = "SEQ_USER", clazz = Integer.class)
 public class Param extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;

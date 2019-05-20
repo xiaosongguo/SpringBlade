@@ -16,6 +16,7 @@
 package org.springblade.system.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.KeySequence;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -33,6 +34,7 @@ import java.io.Serializable;
 @Data
 @TableName("blade_role")
 @ApiModel(value = "Role对象", description = "Role对象")
+@KeySequence(value = "SEQ_USER", clazz = Integer.class)
 public class Role implements Serializable {
 
 	private static final long serialVersionUID = 1L;

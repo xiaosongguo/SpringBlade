@@ -15,6 +15,7 @@
  */
 package org.springblade.system.entity;
 
+import com.baomidou.mybatisplus.annotation.KeySequence;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -32,6 +33,7 @@ import org.springblade.core.mp.base.BaseEntity;
 @TableName("blade_client")
 @EqualsAndHashCode(callSuper = true)
 @ApiModel(value = "Client对象", description = "Client对象")
+@KeySequence(value = "SEQ_USER", clazz = Integer.class)
 public class AuthClient extends BaseEntity {
 
     private static final long serialVersionUID = 1L;

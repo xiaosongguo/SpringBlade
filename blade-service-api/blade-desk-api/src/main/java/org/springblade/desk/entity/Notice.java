@@ -15,6 +15,7 @@
  */
 package org.springblade.desk.entity;
 
+import com.baomidou.mybatisplus.annotation.KeySequence;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -31,6 +32,7 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("blade_notice")
+@KeySequence(value = "SEQ_USER", clazz = Integer.class)
 public class Notice extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;

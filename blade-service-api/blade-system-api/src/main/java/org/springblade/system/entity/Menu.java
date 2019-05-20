@@ -16,6 +16,7 @@
 package org.springblade.system.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.KeySequence;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -34,6 +35,7 @@ import java.io.Serializable;
 @Data
 @TableName("blade_menu")
 @ApiModel(value = "Menu对象", description = "Menu对象")
+@KeySequence(value = "SEQ_USER", clazz = Integer.class)
 public class Menu implements Serializable {
 
 	private static final long serialVersionUID = 1L;

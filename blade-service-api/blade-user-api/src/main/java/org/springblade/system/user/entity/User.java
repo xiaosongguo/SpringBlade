@@ -15,6 +15,7 @@
  */
 package org.springblade.system.user.entity;
 
+import com.baomidou.mybatisplus.annotation.KeySequence;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -30,6 +31,7 @@ import java.time.LocalDateTime;
 @Data
 @TableName("blade_user")
 @EqualsAndHashCode(callSuper = true)
+@KeySequence(value = "SEQ_USER", clazz = Integer.class)
 public class User extends TenantEntity {
 
 	private static final long serialVersionUID = 1L;
