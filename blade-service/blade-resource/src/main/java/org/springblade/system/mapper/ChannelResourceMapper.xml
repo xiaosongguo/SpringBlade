@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.system.mapper.ChannelResourceMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="channelResourceResultMap" type="org.springblade.system.entity.ChannelResource">
+        <id column="ID" property="id"/>
+        <result column="SUPPLIER_TYPE" property="supplierType"/>
+        <result column="SUPPLIER_NAME" property="supplierName"/>
+        <result column="ENTERPRISE_NUMBER" property="enterpriseNumber"/>
+        <result column="ACCESS_NUMBER" property="accessNumber"/>
+        <result column="CONNECT_IP" property="connectIp"/>
+        <result column="PORT" property="port"/>
+        <result column="PROTOCOL_TYPE" property="protocolType"/>
+        <result column="PROTOCOL_VERSION" property="protocolVersion"/>
+        <result column="INDUSTRY_TYPE" property="industryType"/>
+        <result column="IS_PROVINCIAL" property="isProvincial"/>
+        <result column="PROVINCE_NAME" property="provinceName"/>
+        <result column="MIN_CONNECT" property="minConnect"/>
+        <result column="FIRST_MESSAGE_LEN" property="firstMessageLen"/>
+        <result column="MULTIPLE_MESSAGE_LEN" property="multipleMessageLen"/>
+        <result column="SIGN_TYPE" property="signType"/>
+        <result column="RESOURCE_TYPE" property="resourceType"/>
+        <result column="BUSINESS_TYPE" property="businessType"/>
+        <result column="CODE_TYPE" property="codeType"/>
+        <result column="CODE_LEN" property="codeLen"/>
+        <result column="COMPLAINT_RATE" property="complaintRate"/>
+        <result column="SERVICE_REMARK" property="serviceRemark"/>
+        <result column="ACCOUNT" property="account"/>
+        <result column="PASSWORD" property="password"/>
+        <result column="CHANNEL_TPS" property="channelTps"/>
+        <result column="SIGNATURE" property="signature"/>
+        <result column="STATUS" property="status"/>
+        <result column="REMARK" property="remark"/>
+    </resultMap>
+
+
+    <select id="selectChannelResourcePage" resultMap="channelResourceResultMap">
+        select * from ext_channel_resource where is_deleted = 0
+    </select>
+
+</mapper>
