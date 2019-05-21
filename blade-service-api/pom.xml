@@ -11,7 +11,7 @@
 
     <artifactId>blade-service-api</artifactId>
     <name>${project.artifactId}</name>
-    <version>${blade.project.version}</version>
+    <version>1.0.0.ZWX</version>
     <packaging>pom</packaging>
     <description>SpringBlade 微服务API集合</description>
 
