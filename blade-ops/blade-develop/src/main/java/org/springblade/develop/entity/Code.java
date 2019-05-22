@@ -16,6 +16,7 @@
 package org.springblade.develop.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.KeySequence;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -34,6 +35,7 @@ import java.io.Serializable;
 @Data
 @TableName("blade_code")
 @ApiModel(value = "Code对象", description = "Code对象")
+@KeySequence(value = "SEQ_USER", clazz = Integer.class)
 public class Code implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -42,7 +44,7 @@ public class Code implements Serializable {
 	 * 主键
 	 */
 	@ApiModelProperty(value = "主键")
-	@TableId(value = "id", type = IdType.AUTO)
+	@TableId(value = "id", type = IdType.INPUT)
 	private Integer id;
 
 	/**
