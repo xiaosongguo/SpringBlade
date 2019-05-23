@@ -25,7 +25,7 @@ import java.util.List;
  * 通道资源表 Mapper 接口
  *
  * @author Blade
- * @since 2019-05-16
+ * @since 2019-05-23
  */
 public interface ChannelResourceMapper extends BaseMapper<ChannelResource> {
 

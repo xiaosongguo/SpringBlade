@@ -26,7 +26,7 @@ import org.springblade.system.vo.ChannelResourceVO;
  * 通道资源表包装类,返回视图层所需的字段
  *
  * @author Blade
- * @since 2019-05-16
+ * @since 2019-05-23
  */
 @AllArgsConstructor
 public class ChannelResourceWrapper extends BaseEntityWrapper<ChannelResource, ChannelResourceVO>  {

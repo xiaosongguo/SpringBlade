@@ -39,7 +39,7 @@ import java.util.List;
  * 通道资源表 控制器
  *
  * @author Blade
- * @since 2019-05-16
+ * @since 2019-05-23
  */
 @RestController
 @AllArgsConstructor

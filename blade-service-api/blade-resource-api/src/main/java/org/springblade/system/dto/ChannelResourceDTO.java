@@ -23,7 +23,7 @@ import lombok.EqualsAndHashCode;
  * 通道资源表数据传输对象实体类
  *
  * @author Blade
- * @since 2019-05-16
+ * @since 2019-05-23
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

@@ -36,7 +36,7 @@
 
 
     <select id="selectChannelResourcePage" resultMap="channelResourceResultMap">
-        select * from ext_channel_resource where is_deleted = 0
+        select * from EXT_CHANNEL_RESOURCE where is_deleted = 0
     </select>
 
 </mapper>

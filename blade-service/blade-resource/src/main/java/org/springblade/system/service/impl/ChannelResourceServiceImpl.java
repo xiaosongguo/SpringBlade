@@ -27,7 +27,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
  * 通道资源表 服务实现类
  *
  * @author Blade
- * @since 2019-05-16
+ * @since 2019-05-23
  */
 @Service
 public class ChannelResourceServiceImpl extends ServiceImpl<ChannelResourceMapper, ChannelResource> implements IChannelResourceService {

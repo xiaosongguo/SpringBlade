@@ -12,7 +12,7 @@
 
     <artifactId>blade-service</artifactId>
     <name>${project.artifactId}</name>
-    <version>${blade.project.version}</version>
+    <version>1.0.0.ZWX</version>
     <packaging>pom</packaging>
     <description>SpringBlade 微服务集合</description>
 
