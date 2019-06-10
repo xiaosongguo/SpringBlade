@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.system.mapper.QuoteMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="quoteResultMap" type="org.springblade.system.entity.Quote">
+        <result column="ID" property="id"/>
+        <result column="SUPPLIER_ID" property="supplierId"/>
+        <result column="CREATE_TIME" property="createTime"/>
+        <result column="BEGIN_TIME" property="beginTime"/>
+        <result column="END_TIME" property="endTime"/>
+        <result column="STATUS" property="status"/>
+        <result column="TITLE" property="title"/>
+        <result column="FILE_PATH" property="filePath"/>
+        <result column="REMARK" property="remark"/>
+    </resultMap>
+
+
+    <select id="selectQuotePage" resultMap="quoteResultMap">
+        select * from EXT_QUOTE where is_deleted = 0
+    </select>
+
+</mapper>
