@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.system.mapper.QuoteDetailMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="quoteDetailResultMap" type="org.springblade.system.entity.QuoteDetail">
+        <result column="ID" property="id"/>
+        <result column="QUITE_ID" property="quiteId"/>
+        <result column="TAX_RATE" property="taxRate"/>
+        <result column="UNIT_PRICE" property="unitPrice"/>
+        <result column="FILE_PATH" property="filePath"/>
+    </resultMap>
+
+
+    <select id="selectQuoteDetailPage" resultMap="quoteDetailResultMap">
+        select * from EXT_QUOTE_DETAIL where is_deleted = 0
+    </select>
+
+</mapper>
