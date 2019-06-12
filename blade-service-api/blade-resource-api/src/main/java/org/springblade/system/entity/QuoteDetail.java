@@ -15,13 +15,16 @@
  */
 package org.springblade.system.entity;
 
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.KeySequence;
 import com.baomidou.mybatisplus.annotation.TableField;
-import java.io.Serializable;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
+import java.io.Serializable;
 
 /**
  * 实体类
@@ -32,40 +35,41 @@ import io.swagger.annotations.ApiModelProperty;
 @Data
 @TableName("EXT_QUOTE_DETAIL")
 @ApiModel(value = "QuoteDetail对象", description = "QuoteDetail对象")
+@KeySequence(value = "SEQ_USER", clazz = Long.class)
 public class QuoteDetail implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    /**
-     * 主键
-     */
-    @ApiModelProperty(value = "主键")
-    @TableField("ID")
-  private Long id;
-    /**
-     * 报价单Id
-     */
-    @ApiModelProperty(value = "报价单Id")
-    @TableField("QUITE_ID")
-  private Double quiteId;
-    /**
-     * 税率
-     */
-    @ApiModelProperty(value = "税率")
-    @TableField("TAX_RATE")
-  private Double taxRate;
-    /**
-     * 单价
-     */
-    @ApiModelProperty(value = "单价")
-    @TableField("UNIT_PRICE")
-  private Double unitPrice;
-    /**
-     * 附件路径
-     */
-    @ApiModelProperty(value = "附件路径")
-    @TableField("FILE_PATH")
-  private String filePath;
+	/**
+	 * 主键
+	 */
+	@ApiModelProperty(value = "主键")
+	@TableId(value = "ID", type = IdType.INPUT)
+	private Long id;
+	/**
+	 * 报价单Id
+	 */
+	@ApiModelProperty(value = "报价单Id")
+	@TableField("QUITE_ID")
+	private Double quiteId;
+	/**
+	 * 税率
+	 */
+	@ApiModelProperty(value = "税率")
+	@TableField("TAX_RATE")
+	private Double taxRate;
+	/**
+	 * 单价
+	 */
+	@ApiModelProperty(value = "单价")
+	@TableField("UNIT_PRICE")
+	private Double unitPrice;
+	/**
+	 * 附件路径
+	 */
+	@ApiModelProperty(value = "附件路径")
+	@TableField("FILE_PATH")
+	private String filePath;
 
 
 }

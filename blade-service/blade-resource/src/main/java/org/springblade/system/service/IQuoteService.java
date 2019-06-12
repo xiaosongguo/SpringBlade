@@ -15,10 +15,11 @@
  */
 package org.springblade.system.service;
 
-import org.springblade.system.entity.Quote;
-import org.springblade.system.vo.QuoteVO;
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.service.IService;
+import org.springblade.system.entity.Quote;
+import org.springblade.system.entity.QuoteDetail;
+import org.springblade.system.vo.QuoteVO;
 
 /**
  *  服务类
@@ -36,5 +37,13 @@ public interface IQuoteService extends IService<Quote> {
 	 * @return
 	 */
 	IPage<QuoteVO> selectQuotePage(IPage<QuoteVO> page, QuoteVO quote);
+
+	/**
+	 * 新增
+	 * @param quote
+	 * @param quoteDetail
+	 * @return
+	 */
+	boolean saveQuote(Quote quote, QuoteDetail quoteDetail);
 
 }

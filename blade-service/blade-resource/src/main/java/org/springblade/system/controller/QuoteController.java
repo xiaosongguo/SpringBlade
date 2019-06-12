@@ -26,6 +26,7 @@ import org.springblade.core.mp.support.Query;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.system.entity.Quote;
+import org.springblade.system.entity.QuoteDetail;
 import org.springblade.system.feign.IDictClient;
 import org.springblade.system.service.IQuoteService;
 import org.springblade.system.vo.QuoteVO;
@@ -91,9 +92,9 @@ public class QuoteController extends BladeController {
 	* 新增 
 	*/
 	@PostMapping("/save")
-	@ApiOperation(value = "新增", notes = "传入quote", position = 4)
-	public R save(@Valid @RequestBody Quote quote) {
-		return R.status(quoteService.save(quote));
+	@ApiOperation(value = "新增", notes = "传入quote与quoteDetail", position = 4)
+	public R save(@Valid @RequestBody Quote quote,@Valid @RequestBody QuoteDetail quoteDetail) {
+		return R.status(quoteService.saveQuote(quote,quoteDetail));
 	}
 
 	/**

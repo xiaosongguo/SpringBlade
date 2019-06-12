@@ -15,7 +15,10 @@
  */
 package org.springblade.system.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.KeySequence;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -33,64 +36,65 @@ import java.time.LocalDateTime;
 @Data
 @TableName("EXT_QUOTE")
 @ApiModel(value = "Quote对象", description = "Quote对象")
+@KeySequence(value = "SEQ_USER", clazz = Long.class)
 public class Quote implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    /**
-     * 主键
-     */
-    @ApiModelProperty(value = "主键")
-    @TableField("ID")
-  private Long id;
-    /**
-     * 供应商Id
-     */
-    @ApiModelProperty(value = "供应商Id")
-    @TableField("SUPPLIER_ID")
-  private Long supplierId;
-    /**
-     * 报价创建时间
-     */
-    @ApiModelProperty(value = "报价创建时间")
-    @TableField("CREATE_TIME")
-  private LocalDateTime createTime;
-    /**
-     * 报价起始时间
-     */
-    @ApiModelProperty(value = "报价起始时间")
-    @TableField("BEGIN_TIME")
-  private LocalDateTime beginTime;
-    /**
-     * 报价截至时间
-     */
-    @ApiModelProperty(value = "报价截至时间")
-    @TableField("END_TIME")
-  private LocalDateTime endTime;
-    /**
-     * 状态
-     */
-    @ApiModelProperty(value = "状态")
-    @TableField("STATUS")
-  private Integer status;
-    /**
-     * 报价名称
-     */
-    @ApiModelProperty(value = "报价名称")
-    @TableField("TITLE")
-  private String title;
-    /**
-     * 附件路径
-     */
-    @ApiModelProperty(value = "附件路径")
-    @TableField("FILE_PATH")
-  private String filePath;
-    /**
-     * 备注
-     */
-    @ApiModelProperty(value = "备注")
-    @TableField("REMARK")
-  private String remark;
+	/**
+	 * 主键
+	 */
+	@ApiModelProperty(value = "主键")
+	@TableId(value = "ID", type = IdType.INPUT)
+	private Long id;
+	/**
+	 * 供应商Id
+	 */
+	@ApiModelProperty(value = "供应商Id")
+	@TableField("SUPPLIER_ID")
+	private Long supplierId;
+	/**
+	 * 报价创建时间
+	 */
+	@ApiModelProperty(value = "报价创建时间")
+	@TableField("CREATE_TIME")
+	private LocalDateTime createTime;
+	/**
+	 * 报价起始时间
+	 */
+	@ApiModelProperty(value = "报价起始时间")
+	@TableField("BEGIN_TIME")
+	private LocalDateTime beginTime;
+	/**
+	 * 报价截至时间
+	 */
+	@ApiModelProperty(value = "报价截至时间")
+	@TableField("END_TIME")
+	private LocalDateTime endTime;
+	/**
+	 * 状态
+	 */
+	@ApiModelProperty(value = "状态")
+	@TableField("STATUS")
+	private Integer status;
+	/**
+	 * 报价名称
+	 */
+	@ApiModelProperty(value = "报价名称")
+	@TableField("TITLE")
+	private String title;
+	/**
+	 * 附件路径
+	 */
+	@ApiModelProperty(value = "附件路径")
+	@TableField("FILE_PATH")
+	private String filePath;
+	/**
+	 * 备注
+	 */
+	@ApiModelProperty(value = "备注")
+	@TableField("REMARK")
+	private String remark;
 
 
 }

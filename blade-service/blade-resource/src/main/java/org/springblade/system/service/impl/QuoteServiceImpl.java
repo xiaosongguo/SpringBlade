@@ -15,13 +15,14 @@
  */
 package org.springblade.system.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springblade.system.entity.Quote;
-import org.springblade.system.vo.QuoteVO;
+import org.springblade.system.entity.QuoteDetail;
 import org.springblade.system.mapper.QuoteMapper;
 import org.springblade.system.service.IQuoteService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springblade.system.vo.QuoteVO;
 import org.springframework.stereotype.Service;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 
 /**
  *  服务实现类
@@ -32,9 +33,19 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 @Service
 public class QuoteServiceImpl extends ServiceImpl<QuoteMapper, Quote> implements IQuoteService {
 
+	private QuoteDetailServiceImpl quoteDetailServiceImpl;
+
 	@Override
 	public IPage<QuoteVO> selectQuotePage(IPage<QuoteVO> page, QuoteVO quote) {
 		return page.setRecords(baseMapper.selectQuotePage(page, quote));
 	}
+
+	@Override
+	public boolean saveQuote(Quote quote, QuoteDetail quoteDetail) {
+		boolean isSucc = super.save(quote);
+		isSucc = quoteDetailServiceImpl.save(quoteDetail);
+		return isSucc;
+	}
+
 
 }
