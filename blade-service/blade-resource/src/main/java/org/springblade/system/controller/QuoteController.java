@@ -21,6 +21,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import org.springblade.core.boot.ctrl.BladeController;
+import org.springblade.core.boot.file.BladeFile;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.tool.api.R;
@@ -37,8 +38,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *  控制器
@@ -123,6 +127,18 @@ public class QuoteController extends BladeController {
 	@ApiOperation(value = "删除", notes = "传入ids", position = 7)
 	public R remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {
 		return R.status(quoteService.removeByIds(Func.toIntList(ids)));
+	}
+
+	/**
+	 * 上传
+	 */
+	@PostMapping("/upload")
+	@ApiOperation(value = "上传", notes = "", position = 8)
+	public R upload(@RequestParam List<MultipartFile> files, String dir, String path, String virtualPath) {
+		List<BladeFile> errfiles = getFiles(files, dir, path, virtualPath).stream().filter(bladeFile ->
+			!bladeFile.transfer(false)
+		).collect(Collectors.toList());
+		return R.data(errfiles);
 	}
 
 	
