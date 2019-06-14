@@ -134,7 +134,7 @@ public class QuoteController extends BladeController {
 	 */
 	@PostMapping("/upload")
 	@ApiOperation(value = "上传", notes = "", position = 8)
-	public R upload(@RequestParam List<MultipartFile> files, String dir, String path, String virtualPath) {
+	public R upload(@RequestParam("file") List<MultipartFile> files, String dir, String path, String virtualPath) {
 		List<BladeFile> errfiles = getFiles(files, dir, path, virtualPath).stream().filter(bladeFile ->
 			!bladeFile.transfer(false)
 		).collect(Collectors.toList());
