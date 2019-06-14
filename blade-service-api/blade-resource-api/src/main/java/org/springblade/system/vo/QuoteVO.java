@@ -19,6 +19,9 @@ import org.springblade.system.entity.Quote;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import io.swagger.annotations.ApiModel;
+import org.springblade.system.entity.QuoteDetail;
+
+import java.util.List;
 
 /**
  * 视图实体类
@@ -31,5 +34,7 @@ import io.swagger.annotations.ApiModel;
 @ApiModel(value = "QuoteVO对象", description = "QuoteVO对象")
 public class QuoteVO extends Quote {
 	private static final long serialVersionUID = 1L;
+
+	private List<QuoteDetail> quoteDetails;
 
 }

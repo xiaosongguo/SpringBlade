@@ -19,7 +19,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springblade.system.entity.Quote;
-import org.springblade.system.entity.QuoteDetail;
 import org.springblade.system.mapper.QuoteMapper;
 import org.springblade.system.service.IQuoteService;
 import org.springblade.system.vo.QuoteVO;
@@ -43,9 +42,9 @@ public class QuoteServiceImpl extends ServiceImpl<QuoteMapper, Quote> implements
 	}
 
 	@Override
-	public boolean saveQuote(Quote quote, QuoteDetail quoteDetail) {
-		boolean isSucc = super.save(quote);
-		isSucc = quoteDetailServiceImpl.save(quoteDetail);
+	public boolean saveQuote(QuoteVO quoteVO) {
+		boolean isSucc = super.save(quoteVO);
+		isSucc = quoteDetailServiceImpl.saveBatch(quoteVO.getQuoteDetails());
 		return isSucc;
 	}
 
