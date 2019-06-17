@@ -20,6 +20,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springblade.system.entity.Quote;
 import org.springblade.system.mapper.QuoteMapper;
+import org.springblade.system.service.IQuoteDetailService;
 import org.springblade.system.service.IQuoteService;
 import org.springblade.system.vo.QuoteVO;
 import org.springframework.stereotype.Service;
@@ -34,7 +35,7 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class QuoteServiceImpl extends ServiceImpl<QuoteMapper, Quote> implements IQuoteService {
 
-	private QuoteDetailServiceImpl quoteDetailServiceImpl;
+	private IQuoteDetailService quoteDetailService;
 
 	@Override
 	public IPage<QuoteVO> selectQuotePage(IPage<QuoteVO> page, QuoteVO quote) {
@@ -44,7 +45,7 @@ public class QuoteServiceImpl extends ServiceImpl<QuoteMapper, Quote> implements
 	@Override
 	public boolean saveQuote(QuoteVO quoteVO) {
 		boolean isSucc = super.save(quoteVO);
-		isSucc = quoteDetailServiceImpl.saveBatch(quoteVO.getQuoteDetails());
+		isSucc = quoteDetailService.saveBatch(quoteVO.getQuoteDetails());
 		return isSucc;
 	}
 
