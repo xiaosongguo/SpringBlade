@@ -51,7 +51,7 @@ public class QuoteDetail implements Serializable {
 	 */
 	@ApiModelProperty(value = "报价单Id")
 	@TableField("QUITE_ID")
-	private Double quiteId;
+	private Long quiteId;
 	/**
 	 * 税率
 	 */
