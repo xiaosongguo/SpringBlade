@@ -18,6 +18,7 @@ package org.springblade.system.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.AllArgsConstructor;
+import org.springblade.core.secure.utils.SecureUtil;
 import org.springblade.system.entity.Quote;
 import org.springblade.system.entity.QuoteDetail;
 import org.springblade.system.mapper.QuoteMapper;
@@ -47,6 +48,7 @@ public class QuoteServiceImpl extends ServiceImpl<QuoteMapper, Quote> implements
 
 	@Override
 	public boolean saveQuote(QuoteVO quoteVO) {
+		quoteVO.setSupplierId(Long.valueOf(SecureUtil.getUserId()));
 		boolean isSucc = super.save(quoteVO);
 		List<QuoteDetail> quoteDetails = quoteVO.getQuoteDetails();
 		if (quoteDetails.isEmpty()){
