@@ -28,6 +28,7 @@ import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.system.entity.Quote;
 import org.springblade.system.feign.IDictClient;
+import org.springblade.system.service.IQuoteDetailService;
 import org.springblade.system.service.IQuoteService;
 import org.springblade.system.vo.QuoteVO;
 import org.springblade.system.wrapper.QuoteWrapper;
@@ -59,6 +60,8 @@ public class QuoteController extends BladeController {
 
 	private IDictClient dictClient;
 
+	private IQuoteDetailService quoteDetailService;
+
 	/**
 	* 详情
 	*/
@@ -66,7 +69,7 @@ public class QuoteController extends BladeController {
 	@ApiOperation(value = "详情", notes = "传入quote", position = 1)
 	public R<QuoteVO> detail(Quote quote) {
 		Quote detail = quoteService.getOne(Condition.getQueryWrapper(quote));
-		QuoteWrapper quoteWrapper = new QuoteWrapper(dictClient);
+		QuoteWrapper quoteWrapper = new QuoteWrapper(dictClient,quoteDetailService);
 		return R.data(quoteWrapper.entityVO(detail));
 	}
 
@@ -77,7 +80,7 @@ public class QuoteController extends BladeController {
 	@ApiOperation(value = "分页", notes = "传入quote", position = 2)
 	public R<IPage<QuoteVO>> list(Quote quote, Query query) {
 		IPage<Quote> pages = quoteService.page(Condition.getPage(query), Condition.getQueryWrapper(quote));
-		QuoteWrapper quoteWrapper = new QuoteWrapper(dictClient);
+		QuoteWrapper quoteWrapper = new QuoteWrapper(dictClient,quoteDetailService);
 		return R.data(quoteWrapper.pageVO(pages));
 	}
 
@@ -106,6 +109,10 @@ public class QuoteController extends BladeController {
 	@PostMapping("/update")
 	@ApiOperation(value = "修改", notes = "传入quote", position = 5)
 	public R update(@Valid @RequestBody Quote quote) {
+		boolean isSucc = false;
+		if (quote.getStatus() > 0) {
+			return R.fail("状态不对");
+		}
 		return R.status(quoteService.updateById(quote));
 	}
 

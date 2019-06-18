@@ -17,10 +17,16 @@ package org.springblade.system.wrapper;
 
 import lombok.AllArgsConstructor;
 import org.springblade.core.mp.support.BaseEntityWrapper;
+import org.springblade.core.mp.support.Condition;
+import org.springblade.core.secure.utils.SecureUtil;
 import org.springblade.core.tool.utils.BeanUtil;
-import org.springblade.system.feign.IDictClient;
 import org.springblade.system.entity.Quote;
+import org.springblade.system.entity.QuoteDetail;
+import org.springblade.system.feign.IDictClient;
+import org.springblade.system.service.IQuoteDetailService;
 import org.springblade.system.vo.QuoteVO;
+
+import java.util.List;
 
 /**
  * 包装类,返回视图层所需的字段
@@ -32,17 +38,21 @@ import org.springblade.system.vo.QuoteVO;
 public class QuoteWrapper extends BaseEntityWrapper<Quote, QuoteVO>  {
 
 	private IDictClient dictClient;
+	private IQuoteDetailService quoteDetailService;
 
 	@Override
 	public QuoteVO entityVO(Quote quote) {
 		QuoteVO quoteVO = BeanUtil.copy(quote, QuoteVO.class);
-
+		quoteVO.setSupplierId(Long.valueOf(SecureUtil.getUserId()));
 		/*R<String> dict = dictClient.getValue("quote" , quoteVO.getCategory());
 		if (dict.isSuccess()) {
 			String categoryName = dict.getData();
 			quoteVO.setCategoryName(categoryName);
 		}*/
-
+		QuoteDetail quoteDetail = new QuoteDetail();
+		quoteDetail.setQuiteId(quoteVO.getId());
+		List<QuoteDetail> quoteDetails = quoteDetailService.list(Condition.getQueryWrapper(quoteDetail));
+		quoteVO.setQuoteDetails(quoteDetails);
 		return quoteVO;
 	}
 
