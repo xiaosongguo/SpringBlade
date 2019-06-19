@@ -29,7 +29,7 @@
     </select>
 
     <select id="settle" resultType="org.springblade.system.vo.ReceiptVO">
-        SELECT TRUNC(t.vest_date, 'mm') vest_date, SUM((t.cmcc_delv + t.cu_delv + t.ct_delv) * s.unit_price) settle
+        SELECT TRUNC(t.vest_date, 'mm') vest_date, ROUND(SUM((t.cmcc_delv + t.cu_delv + t.ct_delv) * s.unit_price),2) settle
           FROM SMSMAN.PM_RECEIPT t
         <where>
             <if test="receipt.beginDate != null">
