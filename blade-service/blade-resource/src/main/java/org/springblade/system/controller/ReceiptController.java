@@ -130,7 +130,7 @@ public class ReceiptController extends BladeController {
 	 */
 	@GetMapping("/settle")
 	@ApiOperation(value = "结算", notes = "传入receipt", position = 8)
-	public R<IPage<ReceiptVO>> settle(ReceiptVO receipt, Query query,@RequestParam(value = "vestDate[]") Date[] vestDate) {
+	public R<IPage<ReceiptVO>> settle(ReceiptVO receipt, Query query,Date[] vestDate) {
 		receipt.setBeginDate(vestDate[0]);
 		receipt.setEndDate(vestDate[1]);
 		IPage<ReceiptVO> pages = receiptService.settle(Condition.getPage(query), receipt);
