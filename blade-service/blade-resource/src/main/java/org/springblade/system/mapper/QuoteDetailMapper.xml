@@ -9,6 +9,7 @@
         <result column="TAX_RATE" property="taxRate"/>
         <result column="UNIT_PRICE" property="unitPrice"/>
         <result column="FILE_PATH" property="filePath"/>
+        <result column="ITEM_NAME" property="itemName"/>
     </resultMap>
 
 
