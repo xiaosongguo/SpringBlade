@@ -15,10 +15,12 @@
  */
 package org.springblade.system.vo;
 
-import org.springblade.system.entity.Receipt;
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import io.swagger.annotations.ApiModel;
+import org.springblade.system.entity.Receipt;
+
+import java.util.Date;
 
 /**
  * 视图实体类
@@ -33,4 +35,7 @@ public class ReceiptVO extends Receipt {
 	private static final long serialVersionUID = 1L;
 
 	private String settle;
+
+	private Date beginDate;
+	private Date endDate;
 }
