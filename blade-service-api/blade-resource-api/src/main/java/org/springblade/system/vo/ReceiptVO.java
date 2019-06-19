@@ -32,4 +32,5 @@ import io.swagger.annotations.ApiModel;
 public class ReceiptVO extends Receipt {
 	private static final long serialVersionUID = 1L;
 
+	private String settle;
 }

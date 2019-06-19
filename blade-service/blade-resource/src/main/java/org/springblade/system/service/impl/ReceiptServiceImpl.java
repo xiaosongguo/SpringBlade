@@ -37,4 +37,9 @@ public class ReceiptServiceImpl extends ServiceImpl<ReceiptMapper, Receipt> impl
 		return page.setRecords(baseMapper.selectReceiptPage(page, receipt));
 	}
 
+	@Override
+	public IPage<ReceiptVO> settle(IPage<ReceiptVO> page, ReceiptVO receipt) {
+		return page.setRecords(baseMapper.settle(page, receipt));
+	}
+
 }

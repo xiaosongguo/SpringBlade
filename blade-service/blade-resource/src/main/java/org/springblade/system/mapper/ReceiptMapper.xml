@@ -2,26 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.springblade.system.mapper.ReceiptMapper">
 
-    <!-- 通用查询映射结果 -->
-    <resultMap id="receiptResultMap" type="org.springblade.system.entity.Receipt">
-        <result column="PM_NODE" property="pmNode"/>
-        <result column="VEST_DATE" property="vestDate"/>
-        <result column="RECEIPT_DATE" property="receiptDate"/>
-        <result column="ISMG_ID" property="ismgId"/>
-        <result column="USER_ID" property="userId"/>
-        <result column="TEMPLATE_TYPE" property="templateType"/>
-        <result column="UNIT_PRICE" property="unitPrice"/>
-        <result column="PARENT_UNIT_PRICE" property="parentUnitPrice"/>
-        <result column="LOCATION_ID" property="locationId"/>
-        <result column="CMCC_DELV" property="cmccDelv"/>
-        <result column="CMCC_UNDELV" property="cmccUndelv"/>
-        <result column="CU_DELV" property="cuDelv"/>
-        <result column="CU_UNDELV" property="cuUndelv"/>
-        <result column="CT_DELV" property="ctDelv"/>
-        <result column="CT_UNDELV" property="ctUndelv"/>
-    </resultMap>
-
-
     <select id="selectReceiptPage" resultType="org.springblade.system.vo.ReceiptVO">
         SELECT TRUNC(t.vest_date, 'mm') vest_date,
                t.ismg_id,
@@ -35,6 +15,17 @@
          INNER JOIN ext_channel_resource c ON c.ismg_id = t.ismg_id
          GROUP BY TRUNC(t.vest_date, 'mm'), t.ismg_id
          ORDER BY TRUNC(t.vest_date, 'mm'), t.ismg_id
+    </select>
+
+    <select id="settle" resultType="org.springblade.system.vo.ReceiptVO">
+        SELECT TRUNC(t.vest_date, 'mm') vest_date, SUM((t.cmcc_delv + t.cu_delv + t.ct_delv) * s.unit_price) settle
+          FROM SMSMAN.PM_RECEIPT t
+         INNER JOIN ext_channel_resource c
+            ON c.ismg_id = t.ismg_id
+         INNER JOIN ext_quote_detail s
+            ON s.channel_id = c.id
+         GROUP BY TRUNC(t.vest_date, 'mm')
+         ORDER BY TRUNC(t.vest_date, 'mm')
     </select>
 
 </mapper>

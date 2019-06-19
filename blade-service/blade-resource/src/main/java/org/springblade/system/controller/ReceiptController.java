@@ -124,5 +124,13 @@ public class ReceiptController extends BladeController {
 		return R.status(receiptService.removeByIds(Func.toIntList(ids)));
 	}
 
-	
+	/**
+	 * 结算
+	 */
+	@GetMapping("/settle")
+	@ApiOperation(value = "结算", notes = "传入receipt", position = 8)
+	public R<IPage<ReceiptVO>> settle(ReceiptVO receipt, Query query) {
+		IPage<ReceiptVO> pages = receiptService.settle(Condition.getPage(query), receipt);
+		return R.data(pages);
+	}
 }

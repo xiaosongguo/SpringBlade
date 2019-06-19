@@ -37,4 +37,5 @@ public interface IReceiptService extends IService<Receipt> {
 	 */
 	IPage<ReceiptVO> selectReceiptPage(IPage<ReceiptVO> page, ReceiptVO receipt);
 
+	IPage<ReceiptVO> settle(IPage<ReceiptVO> page, ReceiptVO receipt);
 }

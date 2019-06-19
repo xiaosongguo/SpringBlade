@@ -38,4 +38,5 @@ public interface ReceiptMapper extends BaseMapper<Receipt> {
 	 */
 	List<ReceiptVO> selectReceiptPage(IPage page, ReceiptVO receipt);
 
+	List<ReceiptVO> settle(IPage page, ReceiptVO receipt);
 }
