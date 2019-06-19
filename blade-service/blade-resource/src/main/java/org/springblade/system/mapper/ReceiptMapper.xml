@@ -29,7 +29,7 @@
     </select>
 
     <select id="settle" resultType="org.springblade.system.vo.ReceiptVO">
-        SELECT TRUNC(t.vest_date, 'mm') vest_date, cast((SUM((t.cmcc_delv + t.cu_delv + t.ct_delv) * s.unit_price) AS NUMBER(18,2)) settle
+        SELECT TRUNC(t.vest_date, 'mm') vest_date, cast(SUM((t.cmcc_delv + t.cu_delv + t.ct_delv) * s.unit_price) AS NUMBER(18,2)) settle
           FROM SMSMAN.PM_RECEIPT t
          INNER JOIN ext_channel_resource c
             ON c.ismg_id = t.ismg_id
