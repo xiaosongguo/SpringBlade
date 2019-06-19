@@ -12,6 +12,7 @@
                sum(t.ct_delv) ct_delv,
                sum(t.ct_undelv) ct_undelv
           FROM SMSMAN.PM_RECEIPT t
+         INNER JOIN ext_channel_resource c ON c.ismg_id = t.ismg_id
         <where>
             <if test="receipt.ismgId != null">
                 and t.ismg_id = #{receipt.ismgId}
@@ -23,7 +24,6 @@
                 and t.vest_date &lt; to_date(#{receipt.endDate},'yyyy-mm-dd')+1
             </if>
         </where>
-         INNER JOIN ext_channel_resource c ON c.ismg_id = t.ismg_id
          GROUP BY TRUNC(t.vest_date, 'mm'), t.ismg_id
          ORDER BY TRUNC(t.vest_date, 'mm'), t.ismg_id
     </select>
@@ -31,6 +31,10 @@
     <select id="settle" resultType="org.springblade.system.vo.ReceiptVO">
         SELECT TRUNC(t.vest_date, 'mm') vest_date, ROUND(SUM((t.cmcc_delv + t.cu_delv + t.ct_delv) * s.unit_price),2) settle
           FROM SMSMAN.PM_RECEIPT t
+         INNER JOIN ext_channel_resource c
+            ON c.ismg_id = t.ismg_id
+         INNER JOIN ext_quote_detail s
+            ON s.channel_id = c.id
         <where>
             <if test="receipt.beginDate != null">
                 and t.vest_date &gt;= to_date(#{receipt.beginDate},'yyyy-mm-dd')
@@ -39,10 +43,6 @@
                 and t.vest_date &lt; to_date(#{receipt.endDate},'yyyy-mm-dd')+1
             </if>
         </where>
-         INNER JOIN ext_channel_resource c
-            ON c.ismg_id = t.ismg_id
-         INNER JOIN ext_quote_detail s
-            ON s.channel_id = c.id
          GROUP BY TRUNC(t.vest_date, 'mm')
          ORDER BY TRUNC(t.vest_date, 'mm')
     </select>
