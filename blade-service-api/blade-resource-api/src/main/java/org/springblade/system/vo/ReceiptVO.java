@@ -34,7 +34,7 @@ import java.util.Date;
 public class ReceiptVO extends Receipt {
 	private static final long serialVersionUID = 1L;
 
-	private String settle;
+	private Double settle;
 
 	private Date beginDate;
 	private Date endDate;
