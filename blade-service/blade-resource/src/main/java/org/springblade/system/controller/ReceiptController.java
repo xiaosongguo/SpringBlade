@@ -38,7 +38,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.Date;
 
 /**
  *  控制器
@@ -130,12 +129,9 @@ public class ReceiptController extends BladeController {
 	 */
 	@GetMapping("/settle")
 	@ApiOperation(value = "结算", notes = "传入receipt", position = 8)
-	public R<IPage<ReceiptVO>> settle(ReceiptVO receipt, Query query,Date[] vestDate) {
-		if (vestDate!=null){
-			receipt.setBeginDate(vestDate[0]);
-			receipt.setEndDate(vestDate[1]);
-		}
+	public R<IPage<ReceiptVO>> settle(ReceiptVO receipt, Query query) {
 		IPage<ReceiptVO> pages = receiptService.settle(Condition.getPage(query), receipt);
 		return R.data(pages);
 	}
+
 }

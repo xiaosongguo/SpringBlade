@@ -21,7 +21,7 @@ import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 
 /**
  * 实体类
@@ -36,7 +36,7 @@ public class Receipt implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@TableField("VEST_DATE")
-	private Date vestDate;
+	private LocalDate vestDate;
 	@TableField("ISMG_ID")
 	private Long ismgId;
 	@TableField("CMCC_DELV")

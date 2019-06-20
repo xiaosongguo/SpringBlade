@@ -20,8 +20,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springblade.system.entity.Receipt;
 
-import java.util.Date;
-
 /**
  * 视图实体类
  *
@@ -36,6 +34,6 @@ public class ReceiptVO extends Receipt {
 
 	private Double settle;
 
-	private Date beginDate;
-	private Date endDate;
+	private String beginDate;
+	private String endDate;
 }
