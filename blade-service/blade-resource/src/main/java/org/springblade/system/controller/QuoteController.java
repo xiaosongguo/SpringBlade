@@ -23,7 +23,9 @@ import lombok.AllArgsConstructor;
 import org.springblade.core.boot.ctrl.BladeController;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
+import org.springblade.core.secure.utils.SecureUtil;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.constant.SystemConstant;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.system.entity.Quote;
 import org.springblade.system.feign.IDictClient;
@@ -37,7 +39,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -150,18 +151,19 @@ public class QuoteController extends BladeController {
 	@PostMapping("/upload")
 	@ApiOperation(value = "上传", notes = "", position = 8)
 	public R upload(@RequestParam("file") List<MultipartFile> files) {
-		List<String> succfiles = getFiles(files).stream().filter(bladeFile ->
+		String userAccount = SecureUtil.getUserAccount();
+		List<String> succfiles = getFiles(files,userAccount).stream().filter(bladeFile ->
 			bladeFile.transfer(false)
 		).map(bladeFile -> bladeFile.getUploadVirtualPath()).collect(Collectors.toList());
 		return R.data(succfiles);
 	}
 
-	@GetMapping("/download/{fileName:.*}")
-	public ResponseEntity<Resource> downloadCacheFile(@PathVariable("fileName") String fileName) throws IOException {
+	@GetMapping("/download")
+	public ResponseEntity<Resource> downloadCacheFile(@RequestParam("fileName") String fileName) throws IOException {
 			// 获取文件名称，中文可能被URL编码
 			fileName = URLDecoder.decode(fileName, "UTF-8");
 			// 获取本地文件系统中的文件资源
-			FileSystemResource resource = new FileSystemResource(fileName);
+			FileSystemResource resource = new FileSystemResource(SystemConstant.me().getRemotePath() + fileName);
 
 			// 解析文件的 mime 类型
 			String mediaTypeStr = URLConnection.getFileNameMap().getContentTypeFor(fileName);
