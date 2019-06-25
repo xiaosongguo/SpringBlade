@@ -22,6 +22,7 @@ import org.springblade.core.boot.ctrl.BladeController;
 import org.springblade.core.secure.utils.SecureUtil;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.constant.SystemConstant;
+import org.springblade.core.tool.utils.StringPool;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -86,7 +87,9 @@ public class FileController extends BladeController {
 			 */
 			HttpHeaders headers = new HttpHeaders();
 			// 下载之后需要在请求头中放置文件名，该文件名按照ISO_8859_1编码。
-			String filenames = new String(fileName.getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1);
+			String downfile = fileName.substring(fileName.lastIndexOf(StringPool.SLASH)+1);
+
+			String filenames = new String(downfile.getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1);
 			headers.setContentDispositionFormData("attachment", filenames);
 			headers.setContentType(mediaType);
 
