@@ -28,7 +28,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -68,7 +67,7 @@ public class FileController extends BladeController {
 	 * @return
 	 * @throws IOException
 	 */
-	@GetMapping("/download")
+	@PostMapping("/download")
 	public ResponseEntity<Resource> downloadCacheFile(@RequestParam("fileName") String fileName) throws IOException {
 			// 获取文件名称，中文可能被URL编码
 			fileName = URLDecoder.decode(fileName, "UTF-8");
