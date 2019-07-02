@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.system.mapper.IsmgMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="ismgResultMap" type="org.springblade.system.entity.Ismg">
+        <id column="ISMG_ID" property="ismgId"/>
+        <result column="ISMG_NAME" property="ismgName"/>
+        <result column="PROTOCOL" property="protocol"/>
+        <result column="IP" property="ip"/>
+        <result column="PORT" property="port"/>
+        <result column="LOGON_ID" property="logonId"/>
+        <result column="LOGON_PWD" property="logonPwd"/>
+        <result column="SPID" property="spid"/>
+        <result column="PHONE" property="phone"/>
+        <result column="BUSICODE" property="busicode"/>
+        <result column="DESCRIBE" property="describe"/>
+        <result column="SPEED" property="speed"/>
+        <result column="CONFIG" property="config"/>
+        <result column="SMS_DAY_CAPACITY" property="smsDayCapacity"/>
+        <result column="SMS_MONTH_CAPACITY" property="smsMonthCapacity"/>
+        <result column="SMS_CAPACITY" property="smsCapacity"/>
+        <result column="MMS_DAY_CAPACITY" property="mmsDayCapacity"/>
+        <result column="MMS_MONTH_CAPACITY" property="mmsMonthCapacity"/>
+        <result column="MMS_CAPACITY" property="mmsCapacity"/>
+        <result column="ENABLE" property="enable"/>
+        <result column="LUNCH_BEGIN_TIME" property="lunchBeginTime"/>
+        <result column="LUNCH_END_TIME" property="lunchEndTime"/>
+        <result column="LUNCH_SENT_LIMIT" property="lunchSentLimit"/>
+        <result column="LUNCH_RECEIPT_LIMIT" property="lunchReceiptLimit"/>
+        <result column="FORBID_SEND" property="forbidSend"/>
+        <result column="ALLOWED_SCOPE" property="allowedScope"/>
+        <result column="ELIMINATE_SCOPE" property="eliminateScope"/>
+        <result column="BLACK_LEVEL" property="blackLevel"/>
+        <result column="COMPLAINT_RATE" property="complaintRate"/>
+        <result column="LOG_NO_VERIFY" property="logNoVerify"/>
+        <result column="MIN_SEND_SIZE" property="minSendSize"/>
+        <result column="MAX_SEND_SIZE" property="maxSendSize"/>
+        <result column="BLACK_LEVEL2" property="blackLevel2"/>
+    </resultMap>
+
+
+    <resultMap id="dictResultMap" type="org.springblade.system.entity.Ismg">
+        <id column="ISMG_ID" property="ismgId"/>
+        <result column="ISMG_NAME" property="ismgName"/>
+    </resultMap>
+
+
+    <select id="dic" resultMap="dictResultMap">
+       SELECT ismg_id,ismg_name from CM_ISMG
+    </select>
+
+
+    <select id="selectIsmgPage" resultMap="ismgResultMap">
+        select * from CM_ISMG where is_deleted = 0
+    </select>
+
+</mapper>
