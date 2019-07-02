@@ -65,6 +65,14 @@ public interface CommonConstant {
 	 */
 	String DEFAULT_PASSWORD = "123456";
 
+	/**
+	 * 业务状态[1:正常]
+	 */
+	int BIZ_STATUS_NORMAL = 1;
+
+
+	String SMSMAN = "smsman";
+
 
 
 	/**
