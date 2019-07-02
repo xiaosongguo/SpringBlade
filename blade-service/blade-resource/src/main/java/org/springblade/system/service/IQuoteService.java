@@ -17,6 +17,7 @@ package org.springblade.system.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.springblade.system.dto.QuoteDTO;
 import org.springblade.system.entity.Quote;
 import org.springblade.system.vo.QuoteVO;
 
@@ -39,9 +40,16 @@ public interface IQuoteService extends IService<Quote> {
 
 	/**
 	 * 新增报价
-	 * @param quoteVO
+	 * @param quoteDTO
 	 * @return
 	 */
-	boolean saveQuote(QuoteVO quoteVO);
+	boolean saveQuote(QuoteDTO quoteDTO);
+
+	/**
+	 * 报价审核
+	 * @param quoteDTO
+	 * @return
+	 */
+	boolean review(QuoteDTO quoteDTO);
 
 }

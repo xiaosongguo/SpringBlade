@@ -71,6 +71,10 @@ public class QuoteDetail implements Serializable {
 	@TableField("FILE_PATH")
 	private String filePath;
 	@ApiModelProperty(value = "物品名称")
+
+	@TableField("CHANNEL_ID")
+	private String channelId;
+	@ApiModelProperty(value = "物品名称")
 	@TableField("ITEM_NAME")
 	private String itemName;
 

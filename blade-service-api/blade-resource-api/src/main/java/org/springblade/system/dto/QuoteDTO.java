@@ -15,9 +15,13 @@
  */
 package org.springblade.system.dto;
 
-import org.springblade.system.entity.Quote;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springblade.system.entity.Ismg;
+import org.springblade.system.entity.Quote;
+import org.springblade.system.entity.QuoteDetail;
+
+import java.util.List;
 
 /**
  * 数据传输对象实体类
@@ -29,5 +33,11 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class QuoteDTO extends Quote {
 	private static final long serialVersionUID = 1L;
+
+	private List<QuoteDetail> quoteDetails;
+
+	private Long ismgId;
+
+	private List<Ismg> ismgs;
 
 }

@@ -25,6 +25,7 @@ import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
+import org.springblade.system.dto.QuoteDTO;
 import org.springblade.system.entity.Quote;
 import org.springblade.system.feign.IDictClient;
 import org.springblade.system.service.IQuoteDetailService;
@@ -39,6 +40,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.Objects;
 
 /**
  *  控制器
@@ -95,8 +97,8 @@ public class QuoteController extends BladeController {
 	*/
 	@PostMapping("/save")
 	@ApiOperation(value = "新增", notes = "传入quote与quoteDetail", position = 4)
-	public R save(@Valid @RequestBody QuoteVO quoteVo) {
-		return R.status(quoteService.saveQuote(quoteVo));
+	public R save(@Valid @RequestBody QuoteDTO quote) {
+		return R.status(quoteService.saveQuote(quote));
 	}
 
 	/**
@@ -129,6 +131,16 @@ public class QuoteController extends BladeController {
 	@ApiOperation(value = "删除", notes = "传入ids", position = 7)
 	public R remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {
 		return R.status(quoteService.removeByIds(Func.toIntList(ids)));
+	}
+
+
+	@PostMapping("/review")
+	@ApiOperation(value = "审核", notes = "quoteDTO", position = 7)
+	public R review(@ApiParam(value = "quoteDTO", required = true) @RequestBody QuoteDTO quoteDTO) {
+		if (Objects.equals(null,quoteDTO.getId())){
+			return R.fail("id不能为空");
+		}
+		return R.status(quoteService.review(quoteDTO));
 	}
 
 }

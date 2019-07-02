@@ -34,9 +34,25 @@
         <result column="REMARK" property="remark"/>
     </resultMap>
 
+    <resultMap id="channelResourceVO" type="org.springblade.system.vo.ChannelResourceVO" extends="channelResourceResultMap">
+
+    </resultMap>
+
 
     <select id="selectChannelResourcePage" resultMap="channelResourceResultMap">
         select * from EXT_CHANNEL_RESOURCE where is_deleted = 0
+    </select>
+
+
+    <select id="selectChannels" resultMap="channelResourceVO">
+        SELECT t.* from ext_channel_resource t
+        INNER JOIN ext_quote_detail c ON c.channel_id = t.id
+        INNER JOIN ext_quote s ON s.id = c.quite_id
+        <where>
+            <if test="_parameter != null">
+                and s.id = #{_parameter}
+            </if>
+        </where>
     </select>
 
 </mapper>

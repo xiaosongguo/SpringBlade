@@ -38,4 +38,11 @@ public interface ChannelResourceMapper extends BaseMapper<ChannelResource> {
 	 */
 	List<ChannelResourceVO> selectChannelResourcePage(IPage page, ChannelResourceVO channelResource);
 
+	/**
+	 * 查询报价通道
+	 * @param quoteId
+	 * @return
+	 */
+	List<ChannelResourceVO> selectChannels(Long quoteId);
+
 }

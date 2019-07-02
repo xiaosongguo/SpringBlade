@@ -15,10 +15,10 @@
  */
 package org.springblade.system.vo;
 
-import org.springblade.system.entity.Quote;
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import io.swagger.annotations.ApiModel;
+import org.springblade.system.entity.Quote;
 import org.springblade.system.entity.QuoteDetail;
 
 import java.util.List;
@@ -31,10 +31,14 @@ import java.util.List;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "QuoteVO对象", description = "QuoteVO对象")
+@ApiModel(value = "QuoteDetailVO对象", description = "QuoteDetailVO对象")
 public class QuoteVO extends Quote {
 	private static final long serialVersionUID = 1L;
 
 	private List<QuoteDetail> quoteDetails;
+
+	private List<ChannelResourceVO> channelResources;
+
+	private Long ismgId;
 
 }
