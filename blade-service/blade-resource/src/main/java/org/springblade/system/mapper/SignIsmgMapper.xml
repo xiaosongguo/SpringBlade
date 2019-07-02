@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.system.mapper.SignIsmgMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="signIsmgResultMap" type="org.springblade.system.entity.SignIsmg">
+        <id column="SIGN_ID" property="signId"/>
+        <result column="SIGN_NAME" property="signName"/>
+        <result column="ISMG_ID" property="ismgId"/>
+        <result column="SRC_ID" property="srcId"/>
+        <result column="IS_ENABLED" property="isEnabled"/>
+        <result column="CREATE_TIME" property="createTime"/>
+        <result column="FEE_NUMBER" property="feeNumber"/>
+    </resultMap>
+
+
+    <select id="selectSignIsmgPage" resultMap="signIsmgResultMap">
+        select * from CM_SIGN_ISMG where is_deleted = 0
+    </select>
+
+</mapper>
