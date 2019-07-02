@@ -7,11 +7,17 @@ blade:
     blade-auth: blade-auth
     blade-desk: blade-desk
     blade-system: blade-system
+    blade-user: blade-user
 
 spring:
   cloud:
     gateway:
       routes:
+        # 认证中心
+      - id: ${blade.service.blade-user}
+        uri: lb://${blade.service.blade-user}
+        predicates:
+          - Path=/${blade.service.blade-user}/register/**
       # 认证中心
       - id: ${blade.service.blade-auth}
         uri: lb://${blade.service.blade-auth}
