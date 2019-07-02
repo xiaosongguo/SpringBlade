@@ -2,9 +2,20 @@
 server:
   port: 8107
 
+
 #数据源配置
 spring:
   datasource:
-    url: ${blade.datasource.dev.url}
-    username: ${blade.datasource.dev.username}
-    password: ${blade.datasource.dev.password}
+    dynamic:
+      datasource:
+        master:
+          username: ${blade.datasource.dev.username}
+          password: ${blade.datasource.dev.password}
+          url: ${blade.datasource.dev.url}
+          driver-class-name: oracle.jdbc.driver.OracleDriver
+        smsman:
+          username: ${smsman.datasource.dev.username}
+          password: ${smsman.datasource.dev.password}
+          url: ${smsman.datasource.dev.url}
+          driver-class-name: oracle.jdbc.driver.OracleDriver
+      p6spy: true

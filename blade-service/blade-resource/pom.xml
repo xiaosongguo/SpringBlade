@@ -30,6 +30,13 @@
             <artifactId>blade-dict-api</artifactId>
             <version>${blade.project.version}</version>
         </dependency>
+        <!-- 动态切换数据源 -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+            <version>${dynamic.datasource.version}</version>
+        </dependency>
+
     </dependencies>
 
 </project>
