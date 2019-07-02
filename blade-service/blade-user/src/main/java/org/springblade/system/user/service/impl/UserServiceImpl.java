@@ -91,7 +91,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 
 	@Override
 	public List<String> getDeptName(String deptIds) {
-		return baseMapper.getDeptName(Func.toStrArray(deptIds));
+		return deptIds != null ? baseMapper.getDeptName(Func.toStrArray(deptIds)):null;
 	}
 
 }
