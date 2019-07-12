@@ -28,6 +28,7 @@
         <spring.platform.version>Cairo-SR7</spring.platform.version>
 
         <dynamic.datasource.version>2.5.4</dynamic.datasource.version>
+        <p6spy.version>3.8.2</p6spy.version>
 
         <!-- 推荐使用Harbor -->
         <docker.registry.url>10.211.55.5</docker.registry.url>

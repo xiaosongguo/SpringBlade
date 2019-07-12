@@ -6,7 +6,7 @@
     <resultMap id="channelResourceResultMap" type="org.springblade.system.entity.ChannelResource">
         <id column="ID" property="id"/>
         <result column="SUPPLIER_TYPE" property="supplierType"/>
-        <result column="SUPPLIER_NAME" property="supplierName"/>
+        <result column="SUPPLIER_ID" property="supplierId"/>
         <result column="ENTERPRISE_NUMBER" property="enterpriseNumber"/>
         <result column="ACCESS_NUMBER" property="accessNumber"/>
         <result column="CONNECT_IP" property="connectIp"/>

@@ -51,9 +51,9 @@ public class ChannelResource implements Serializable {
 	/**
 	 * 供应商名称
 	 */
-	@ApiModelProperty(value = "供应商名称")
-	@TableField("SUPPLIER_NAME")
-	private String supplierName;
+	@ApiModelProperty(value = "供应商ID")
+	@TableField("SUPPLIER_ID")
+	private Integer supplierId;
 	/**
 	 * 企业号
 	 */
@@ -204,6 +204,12 @@ public class ChannelResource implements Serializable {
 	@ApiModelProperty(value = "备注")
 	@TableField("REMARK")
 	private String remark;
+	/**
+	 * 网关ID
+	 */
+	@ApiModelProperty(value = "网关ID")
+	@TableField("ISMG_ID")
+	private Long ismgId;
 
 
 }

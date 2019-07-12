@@ -15,10 +15,12 @@
  */
 package org.springblade.system.mapper;
 
-import org.springblade.system.entity.Bill;
-import org.springblade.system.vo.BillVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.springblade.system.dto.BillDTO;
+import org.springblade.system.entity.Bill;
+import org.springblade.system.vo.BillVO;
+
 import java.util.List;
 
 /**
@@ -38,4 +40,9 @@ public interface BillMapper extends BaseMapper<Bill> {
 	 */
 	List<BillVO> selectBillPage(IPage page, BillVO bill);
 
+	List<BillVO> settle(IPage<BillVO> page, BillDTO bill);
+
+	List<BillVO> detail(IPage<BillVO> page, BillVO bill);
+
+	boolean createBills(List<Bill> bills);
 }

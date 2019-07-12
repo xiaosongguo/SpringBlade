@@ -16,11 +16,72 @@
         <result column="SYS_MONEY" property="sysMoney"/>
         <result column="BILL_STATUS" property="billStatus"/>
         <result column="REMARK" property="remark"/>
+        <result column="USER_ID" property="userId"/>
+    </resultMap>
+
+    <resultMap id="billVo" type="org.springblade.system.vo.BillVO">
+
     </resultMap>
 
 
     <select id="selectBillPage" resultMap="billResultMap">
         select * from EXT_BILL where is_deleted = 0
     </select>
+
+    <select id="detail" resultMap="billVo">
+        SELECT t.account,
+        t.ismg_id,
+        c.id,
+        c.bill_month,
+        c.supplier_amount,
+        c.supplier_money,
+        c.sys_amount,
+        c.sys_money
+        from ext_channel_resource t
+        LEFT JOIN ext_bill c ON c.ismg_id = t.ismg_id
+            <where>
+                <if test="bill.userId !=null">
+                    and c.user_id = #{bill.userId}
+                </if>
+                <if test="bill.billStatus !=null">
+                    and c.user_id = #{bill.billStatus}
+                </if>
+                <if test="bill.billMonth !=null">
+                    and TRUNC(c.bill_month, 'mm') = #{bill.billMonth}
+                </if>
+            </where>
+    </select>
+
+    <select id="settle" resultMap="billVo">
+        SELECT TRUNC(c.bill_month, 'mm') bill_month,
+        c.user_id,
+        c.bill_status,
+        sum(c.sys_money) sys_money,
+        MAX(s.account) account
+        FROM ext_channel_resource t
+        LEFT JOIN EXT_BILL c ON c.ismg_id = t.ismg_id
+        LEFT JOIN blade_user s ON s.id = c.user_id
+        <where>
+            <if test="bill.userId !=null">
+                and c.user_id = #{bill.userId}
+            </if>
+        </where>
+        GROUP BY TRUNC(c.bill_month, 'mm'), c.user_id, c.bill_status
+    </select>
+
+    <insert id="createBills" parameterType="java.util.List">
+        merge into ext_bill t
+        <foreach collection="list" index="index" item="item" separator="union all" open="using (" close=") c">
+            select #{item.billStatus} as billStatus,
+                   #{item.ismgId} as ismgId,
+                   #{item.billMonth} as billMonth,
+                   #{item.userId} as userId
+            from dual
+        </foreach>
+        on (t.ismg_id = c.ismgId and t.user_id = c.userId and TRUNC(t.bill_month) = TRUNC(c.billMonth))
+        when not matched
+        then insert(id,ismg_id,user_id,bill_month,bill_status) values (seq_user.nextval,c.ismgId,c.userId,c.billMonth,c.billStatus)
+    </insert>
+
 
 </mapper>

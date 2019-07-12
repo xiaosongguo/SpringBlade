@@ -52,7 +52,7 @@ public class Quote implements Serializable {
 	 */
 	@ApiModelProperty(value = "供应商Id")
 	@TableField("SUPPLIER_ID")
-	private Long supplierId;
+	private Integer supplierId;
 	/**
 	 * 报价创建时间
 	 */

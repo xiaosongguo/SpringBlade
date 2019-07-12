@@ -34,4 +34,6 @@ public class IsmgVO extends Ismg {
 
 	private String signName;
 
+	private  Long channelId;
+
 }

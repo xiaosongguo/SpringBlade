@@ -23,6 +23,9 @@
             <if test="receipt.endDate != null">
                 and t.vest_date &lt; to_date(#{receipt.endDate},'yyyy-mm-dd')+1
             </if>
+            <if test="receipt.supplierId != null" >
+                and c.supplier_id = #{receipt.supplierId}
+            </if>
         </where>
          GROUP BY TRUNC(t.vest_date, 'mm'), t.ismg_id
          ORDER BY TRUNC(t.vest_date, 'mm'), t.ismg_id

@@ -15,6 +15,8 @@
  */
 package org.springblade.system.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.KeySequence;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -34,82 +36,89 @@ import java.time.LocalDateTime;
 @Data
 @TableName("EXT_BILL")
 @ApiModel(value = "Bill对象", description = "通道账单表")
+@KeySequence(value = "SEQ_USER", clazz = Long.class)
 public class Bill implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    /**
-     * ID
-     */
-    @ApiModelProperty(value = "ID")
-    @TableId("ID")
-  private Double id;
-    /**
-     * 网关ID
-     */
-    @ApiModelProperty(value = "网关ID")
-    @TableField("ISMG_ID")
-  private Double ismgId;
-    /**
-     * 账期
-     */
-    @ApiModelProperty(value = "账期")
-    @TableField("BILL_MONTH")
-  private LocalDateTime billMonth;
-    /**
-     * 创建时间
-     */
-    @ApiModelProperty(value = "创建时间")
-    @TableField("CREATE_TIME")
-  private LocalDateTime createTime;
-    /**
-     * 核实时间
-     */
-    @ApiModelProperty(value = "核实时间")
-    @TableField("AUDIT_TIME")
-  private LocalDateTime auditTime;
-    /**
-     * 核实用户
-     */
-    @ApiModelProperty(value = "核实用户")
-    @TableField("AUDIT_USER")
-  private Double auditUser;
-    /**
-     * 供应商对账资源量
-     */
-    @ApiModelProperty(value = "供应商对账资源量")
-    @TableField("SUPPLIER_AMOUNT")
-  private Double supplierAmount;
-    /**
-     * 供应商对账金额(元)
-     */
-    @ApiModelProperty(value = "供应商对账金额(元)")
-    @TableField("SUPPLIER_MONEY")
-  private Double supplierMoney;
-    /**
-     * 结算资源量
-     */
-    @ApiModelProperty(value = "结算资源量")
-    @TableField("SYS_AMOUNT")
-  private Double sysAmount;
-    /**
-     * 结算金额(元)
-     */
-    @ApiModelProperty(value = "结算金额(元)")
-    @TableField("SYS_MONEY")
-  private Double sysMoney;
-    /**
-     * 账单状态：0待提交；1待核实；2已核实
-     */
-    @ApiModelProperty(value = "账单状态：0待提交；1待核实；2已核实")
-    @TableField("BILL_STATUS")
-  private Double billStatus;
-    /**
-     * 备注
-     */
-    @ApiModelProperty(value = "备注")
-    @TableField("REMARK")
-  private String remark;
+	/**
+	 * ID
+	 */
+	@ApiModelProperty(value = "ID")
+	@TableId(value = "ID", type = IdType.INPUT)
+	private Long id;
+	/**
+	 * 网关ID
+	 */
+	@ApiModelProperty(value = "网关ID")
+	@TableField("ISMG_ID")
+	private Long ismgId;
+	/**
+	 * 供应商Id
+	 */
+	@ApiModelProperty(value = "供应商Id")
+	@TableField("USER_ID")
+	private Integer userId;
+	/**
+	 * 账期
+	 */
+	@ApiModelProperty(value = "账期")
+	@TableField("BILL_MONTH")
+	private LocalDateTime billMonth;
+	/**
+	 * 创建时间
+	 */
+	@ApiModelProperty(value = "创建时间")
+	@TableField("CREATE_TIME")
+	private LocalDateTime createTime;
+	/**
+	 * 核实时间
+	 */
+	@ApiModelProperty(value = "核实时间")
+	@TableField("AUDIT_TIME")
+	private LocalDateTime auditTime;
+	/**
+	 * 核实用户
+	 */
+	@ApiModelProperty(value = "核实用户")
+	@TableField("AUDIT_USER")
+	private Integer auditUser;
+	/**
+	 * 供应商对账资源量
+	 */
+	@ApiModelProperty(value = "供应商对账资源量")
+	@TableField("SUPPLIER_AMOUNT")
+	private Long supplierAmount;
+	/**
+	 * 供应商对账金额(元)
+	 */
+	@ApiModelProperty(value = "供应商对账金额(元)")
+	@TableField("SUPPLIER_MONEY")
+	private Double supplierMoney;
+	/**
+	 * 结算资源量
+	 */
+	@ApiModelProperty(value = "结算资源量")
+	@TableField("SYS_AMOUNT")
+	private Long sysAmount;
+	/**
+	 * 结算金额(元)
+	 */
+	@ApiModelProperty(value = "结算金额(元)")
+	@TableField("SYS_MONEY")
+	private Double sysMoney;
+	/**
+	 * 账单状态：0待提交；1待核实；2已核实
+	 */
+	@ApiModelProperty(value = "账单状态：0待提交；1待核实；2已核实")
+	@TableField("BILL_STATUS")
+	private Integer billStatus;
+	/**
+	 * 备注
+	 */
+	@ApiModelProperty(value = "备注")
+	@TableField("REMARK")
+	private String remark;
 
 
 }

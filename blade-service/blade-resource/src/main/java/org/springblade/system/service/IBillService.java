@@ -15,10 +15,11 @@
  */
 package org.springblade.system.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.service.IService;
+import org.springblade.system.dto.BillDTO;
 import org.springblade.system.entity.Bill;
 import org.springblade.system.vo.BillVO;
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 
 /**
  * 通道账单表 服务类
@@ -37,4 +38,26 @@ public interface IBillService extends IService<Bill> {
 	 */
 	IPage<BillVO> selectBillPage(IPage<BillVO> page, BillVO bill);
 
+	/**
+	 * 月度结算
+	 *
+	 * @param page
+	 * @param bill
+	 * @return
+	 */
+	IPage<BillVO> settle(IPage<BillVO> page, BillDTO bill);
+
+	/**
+	 * 每月网关发送查询
+	 * @param page
+	 * @param bill
+	 * @return
+	 */
+	IPage<BillVO> detail(IPage<BillVO> page, BillVO bill);
+
+	/**
+	 * 每月生成账单
+	 * @return
+	 */
+	boolean createBills();
 }

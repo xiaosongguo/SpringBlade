@@ -36,4 +36,6 @@ public class ReceiptVO extends Receipt {
 
 	private String beginDate;
 	private String endDate;
+
+	private Integer supplierId;
 }

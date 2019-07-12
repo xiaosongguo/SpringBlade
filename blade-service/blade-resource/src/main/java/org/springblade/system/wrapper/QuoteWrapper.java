@@ -43,7 +43,7 @@ public class QuoteWrapper extends BaseEntityWrapper<Quote, QuoteVO>  {
 	@Override
 	public QuoteVO entityVO(Quote quote) {
 		QuoteVO quoteVO = BeanUtil.copy(quote, QuoteVO.class);
-		quoteVO.setSupplierId(Long.valueOf(SecureUtil.getUserId()));
+		quoteVO.setSupplierId(SecureUtil.getUserId());
 		/*R<String> dict = dictClient.getValue("quote" , quoteVO.getCategory());
 		if (dict.isSuccess()) {
 			String categoryName = dict.getData();

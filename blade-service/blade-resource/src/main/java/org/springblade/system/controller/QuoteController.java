@@ -23,7 +23,10 @@ import lombok.AllArgsConstructor;
 import org.springblade.core.boot.ctrl.BladeController;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
+import org.springblade.core.secure.auth.AuthFun;
+import org.springblade.core.secure.utils.SecureUtil;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.constant.RoleConstant;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.system.dto.QuoteDTO;
 import org.springblade.system.entity.Quote;
@@ -60,6 +63,14 @@ public class QuoteController extends BladeController {
 
 	private IQuoteDetailService quoteDetailService;
 
+	private AuthFun authFun;
+
+	private void authFun(Quote quote) {
+		if (authFun.hasAnyRole(RoleConstant.SUPPLIER)){
+			quote.setSupplierId(SecureUtil.getUserId());
+		}
+	}
+
 	/**
 	* 详情
 	*/
@@ -77,6 +88,7 @@ public class QuoteController extends BladeController {
 	@GetMapping("/list")
 	@ApiOperation(value = "分页", notes = "传入quote", position = 2)
 	public R<IPage<QuoteVO>> list(Quote quote, Query query) {
+		authFun(quote);
 		IPage<Quote> pages = quoteService.page(Condition.getPage(query), Condition.getQueryWrapper(quote));
 		QuoteWrapper quoteWrapper = new QuoteWrapper(dictClient,quoteDetailService);
 		return R.data(quoteWrapper.pageVO(pages));

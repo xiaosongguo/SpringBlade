@@ -15,10 +15,12 @@
  */
 package org.springblade.system.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.service.IService;
 import org.springblade.system.entity.ChannelResource;
 import org.springblade.system.vo.ChannelResourceVO;
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.baomidou.mybatisplus.core.metadata.IPage;
+
+import java.util.List;
 
 /**
  * 通道资源表 服务类
@@ -36,5 +38,7 @@ public interface IChannelResourceService extends IService<ChannelResource> {
 	 * @return
 	 */
 	IPage<ChannelResourceVO> selectChannelResourcePage(IPage<ChannelResourceVO> page, ChannelResourceVO channelResource);
+
+	List<ChannelResource> selectAvailableChannels();
 
 }

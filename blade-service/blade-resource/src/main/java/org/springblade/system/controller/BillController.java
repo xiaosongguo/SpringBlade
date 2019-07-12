@@ -23,8 +23,12 @@ import lombok.AllArgsConstructor;
 import org.springblade.core.boot.ctrl.BladeController;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
+import org.springblade.core.secure.auth.AuthFun;
+import org.springblade.core.secure.utils.SecureUtil;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.constant.RoleConstant;
 import org.springblade.core.tool.utils.Func;
+import org.springblade.system.dto.BillDTO;
 import org.springblade.system.entity.Bill;
 import org.springblade.system.feign.IDictClient;
 import org.springblade.system.service.IBillService;
@@ -38,6 +42,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 通道账单表 控制器
@@ -55,15 +61,26 @@ public class BillController extends BladeController {
 
 	private IDictClient dictClient;
 
+	private AuthFun authFun;
+
 	/**
 	* 详情
 	*/
 	@GetMapping("/detail")
 	@ApiOperation(value = "详情", notes = "传入bill", position = 1)
-	public R<BillVO> detail(Bill bill) {
-		Bill detail = billService.getOne(Condition.getQueryWrapper(bill));
-		BillWrapper billWrapper = new BillWrapper(dictClient);
-		return R.data(billWrapper.entityVO(detail));
+	public R<IPage<BillVO>> detail(BillVO bill, Query query) {
+		return R.data(billService.detail(Condition.getPage(query), bill));	}
+
+	/**
+	* 结算查询
+	*/
+	@GetMapping("/settle")
+	@ApiOperation(value = "结算", notes = "传入bill", position = 8)
+	public R<IPage<BillVO>> settle(BillDTO bill, Query query) {
+		if (authFun.hasAnyRole(RoleConstant.SUPPLIER)){
+			bill.setUserId(SecureUtil.getUserId());
+		}
+		return R.data(billService.settle(Condition.getPage(query), bill));
 	}
 
 	/**
@@ -96,6 +113,7 @@ public class BillController extends BladeController {
 		return R.status(billService.save(bill));
 	}
 
+
 	/**
 	* 修改 通道账单表
 	*/
@@ -110,8 +128,26 @@ public class BillController extends BladeController {
 	*/
 	@PostMapping("/submit")
 	@ApiOperation(value = "新增或修改", notes = "传入bill", position = 6)
-	public R submit(@Valid @RequestBody Bill bill) {
-		return R.status(billService.saveOrUpdate(bill));
+	public R submit(@Valid @RequestBody List<Bill> bill) {
+		List<Bill> collect = bill.stream().map(i -> {
+			Bill b = new Bill();
+			Long id = i.getId();
+			b.setId(i.getId());
+			if(Func.isEmpty(id)){
+				b.setBillStatus(0);
+			}
+			if (authFun.hasAnyRole(RoleConstant.SUPPLIER)) {
+				b.setSupplierAmount(i.getSupplierAmount());
+				b.setSupplierMoney(i.getSupplierMoney());
+				b.setBillStatus(1);
+			} else {
+				b.setSysAmount(i.getSysAmount());
+				b.setSysMoney(i.getSysMoney());
+				b.setBillStatus(2);
+			}
+			return b;
+		}).collect(Collectors.toList());
+		return R.status(billService.saveOrUpdateBatch(collect));
 	}
 
 	
@@ -124,5 +160,12 @@ public class BillController extends BladeController {
 		return R.status(billService.removeByIds(Func.toIntList(ids)));
 	}
 
-	
+	/**
+	 * 批量导入对账
+	 */
+	@PostMapping("/import")
+	@ApiOperation(value = "导入", notes = "传入bills", position = 5)
+	public R update(@Valid @RequestBody List<Bill> bills) {
+		return R.status(billService.saveBatch(bills));
+	}
 }

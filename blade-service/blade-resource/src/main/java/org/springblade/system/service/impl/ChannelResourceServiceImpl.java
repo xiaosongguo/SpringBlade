@@ -15,13 +15,16 @@
  */
 package org.springblade.system.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springblade.system.entity.ChannelResource;
-import org.springblade.system.vo.ChannelResourceVO;
 import org.springblade.system.mapper.ChannelResourceMapper;
 import org.springblade.system.service.IChannelResourceService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springblade.system.vo.ChannelResourceVO;
 import org.springframework.stereotype.Service;
-import com.baomidou.mybatisplus.core.metadata.IPage;
+
+import java.util.List;
 
 /**
  * 通道资源表 服务实现类
@@ -35,6 +38,11 @@ public class ChannelResourceServiceImpl extends ServiceImpl<ChannelResourceMappe
 	@Override
 	public IPage<ChannelResourceVO> selectChannelResourcePage(IPage<ChannelResourceVO> page, ChannelResourceVO channelResource) {
 		return page.setRecords(baseMapper.selectChannelResourcePage(page, channelResource));
+	}
+
+	@Override
+	public List<ChannelResource> selectAvailableChannels() {
+		return list(Wrappers.<ChannelResource>lambdaQuery().eq(ChannelResource::getStatus,1));
 	}
 
 }

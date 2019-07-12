@@ -23,7 +23,10 @@ import lombok.AllArgsConstructor;
 import org.springblade.core.boot.ctrl.BladeController;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
+import org.springblade.core.secure.auth.AuthFun;
+import org.springblade.core.secure.utils.SecureUtil;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.constant.RoleConstant;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.system.entity.Receipt;
 import org.springblade.system.feign.IDictClient;
@@ -55,6 +58,8 @@ public class ReceiptController extends BladeController {
 
 	private IDictClient dictClient;
 
+	private AuthFun authFun;
+
 	/**
 	* 详情
 	*/
@@ -77,12 +82,19 @@ public class ReceiptController extends BladeController {
 		return R.data(receiptWrapper.pageVO(pages));
 	}
 
+	private void authFun(ReceiptVO receipt) {
+		if (authFun.hasAnyRole(RoleConstant.SUPPLIER)){
+			receipt.setSupplierId(SecureUtil.getUserId());
+		}
+	}
+
 	/**
 	* 自定义分页 
 	*/
 	@GetMapping("/page")
 	@ApiOperation(value = "分页", notes = "传入receipt", position = 3)
 	public R<IPage<ReceiptVO>> page(ReceiptVO receipt, Query query) {
+		authFun(receipt);
 		IPage<ReceiptVO> pages = receiptService.selectReceiptPage(Condition.getPage(query), receipt);
 		return R.data(pages);
 	}

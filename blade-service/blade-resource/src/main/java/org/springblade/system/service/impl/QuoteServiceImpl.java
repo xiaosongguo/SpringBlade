@@ -22,6 +22,7 @@ import lombok.AllArgsConstructor;
 import org.springblade.core.secure.utils.SecureUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.system.dto.QuoteDTO;
+import org.springblade.system.entity.ChannelResource;
 import org.springblade.system.entity.Ismg;
 import org.springblade.system.entity.Quote;
 import org.springblade.system.entity.QuoteDetail;
@@ -29,6 +30,7 @@ import org.springblade.system.entity.SignIsmg;
 import org.springblade.system.feign.IDictClient;
 import org.springblade.system.mapper.ChannelResourceMapper;
 import org.springblade.system.mapper.QuoteMapper;
+import org.springblade.system.service.IChannelResourceService;
 import org.springblade.system.service.IIsmgService;
 import org.springblade.system.service.IQuoteDetailService;
 import org.springblade.system.service.IQuoteService;
@@ -37,10 +39,13 @@ import org.springblade.system.vo.ChannelResourceVO;
 import org.springblade.system.vo.IsmgVO;
 import org.springblade.system.vo.QuoteVO;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -62,6 +67,8 @@ public class QuoteServiceImpl extends ServiceImpl<QuoteMapper, Quote> implements
 
 	private ChannelResourceMapper channelResourceMapper;
 
+	private IChannelResourceService channelResourceService;
+
 	private IDictClient dictClient;
 
 	@Override
@@ -71,7 +78,7 @@ public class QuoteServiceImpl extends ServiceImpl<QuoteMapper, Quote> implements
 
 	@Override
 	public boolean saveQuote(QuoteDTO quoteVO) {
-		quoteVO.setSupplierId(Long.valueOf(SecureUtil.getUserId()));
+		quoteVO.setSupplierId(SecureUtil.getUserId());
 		boolean isSucc = super.save(quoteVO);
 		List<QuoteDetail> quoteDetails = quoteVO.getQuoteDetails();
 		if (quoteDetails.isEmpty()){
@@ -83,19 +90,38 @@ public class QuoteServiceImpl extends ServiceImpl<QuoteMapper, Quote> implements
 	}
 
 	@Override
+	@Transactional
 	public boolean review(QuoteDTO quoteDTO) {
 		boolean update = update(Wrappers.<Quote>lambdaUpdate()
 			.set(Quote::getStatus,quoteDTO.getStatus())
 			.eq(Quote::getId, quoteDTO.getId()));
 
-		List<ChannelResourceVO> channelResources = channelResourceMapper.selectChannels(quoteDTO.getId());
+		if (quoteDTO.getStatus() == 1 ){
+			List<ChannelResourceVO> channelResources = channelResourceMapper.selectChannels(quoteDTO.getId());
+			List<Ismg> ismgs = getIsmgs(channelResources);
+			boolean insertIsmg = ismgService.saveBatch(ismgs);
+			boolean updateChannel = updateChannelResources(ismgs, channelResources);
+			List<SignIsmg> signIsmgs = getSignIsmgs(ismgs);
+			boolean insertSignIsmg = signIsmgService.saveBatch(signIsmgs);
+			return update && insertIsmg && updateChannel && insertSignIsmg ;
+		}
+		return update ;
 
-		List<Ismg> ismgs = getIsmgs(channelResources);
-		boolean insertIsmg = ismgService.saveBatch(ismgs);
+	}
 
-		List<SignIsmg> signIsmgs = getSignIsmgs(ismgs);
-		boolean insertSignIsmg = signIsmgService.saveBatch(signIsmgs);
-		return update && insertIsmg && insertSignIsmg ;
+	private boolean updateChannelResources(List<Ismg> ismgs, List<ChannelResourceVO> channelResources) {
+		List<ChannelResource> collect = new ArrayList<>();
+		ismgs.stream().forEach(ismg -> {
+			IsmgVO ismgVo = (IsmgVO) ismg;
+			channelResources.stream().forEach(channel -> {
+					if (channel.getId() == ismgVo.getChannelId()) {
+						channel.setIsmgId(ismgVo.getIsmgId());
+						collect.add(channel);
+					}
+				}
+			);
+		});
+		return channelResourceService.updateBatchById(collect);
 	}
 
 	/**
@@ -121,6 +147,7 @@ public class QuoteServiceImpl extends ServiceImpl<QuoteMapper, Quote> implements
 			ismg.setMaxSendSize(1000);
 			ismg.setBlackLevel2("0-4");
 			ismg.setSignName(channelResource.getSignature());
+			ismg.setChannelId(channelResource.getId());
 			return ismg;
 		}).collect(Collectors.toList());
 	}
@@ -148,4 +175,10 @@ public class QuoteServiceImpl extends ServiceImpl<QuoteMapper, Quote> implements
 		return signIsmgs;
 	}
 
+
+	@Override
+	@Transactional
+	public boolean removeByIds(Collection<? extends Serializable> idList) {
+		return quoteDetailService.remove(Wrappers.<QuoteDetail>lambdaQuery().in(QuoteDetail::getQuiteId,idList)) && super.removeByIds(idList);
+	}
 }
