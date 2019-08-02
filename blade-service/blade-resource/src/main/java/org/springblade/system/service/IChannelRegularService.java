@@ -15,34 +15,19 @@
  */
 package org.springblade.system.service;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.springblade.system.entity.ChannelResource;
-import org.springblade.system.vo.ChannelResourceVO;
+import org.springblade.system.entity.ChannelRegular;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
- * 通道资源表 服务类
+ * 通道详表 服务类
  *
  * @author Blade
- * @since 2019-05-23
+ * @since 2019-07-18
  */
-public interface IChannelResourceService extends IService<ChannelResource> {
+public interface IChannelRegularService extends IService<ChannelRegular> {
 
-	/**
-	 * 自定义分页
-	 *
-	 * @param page
-	 * @param channelResource
-	 * @return
-	 */
-	IPage<ChannelResourceVO> selectChannelResourcePage(IPage<ChannelResourceVO> page, ChannelResourceVO channelResource);
-
-	List<ChannelResource> selectAvailableChannels();
-
-	boolean saveOrUpdateCustom(ChannelResource channelResource);
-
-	boolean removeCascadeByIds(List<Integer> toIntList);
+	boolean updateBatchByIsmgId(Collection<ChannelRegular> channelRegulars);
 
 }

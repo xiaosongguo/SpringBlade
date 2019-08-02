@@ -16,30 +16,17 @@
 package org.springblade.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.springblade.system.entity.ChannelResource;
-import org.springblade.system.entity.Ismg;
-import org.springblade.system.vo.IsmgVO;
-
-import java.util.List;
+import org.apache.ibatis.annotations.Param;
+import org.springblade.system.entity.DicArea;
 
 /**
- * 网关表 Mapper 接口
+ * snapshot table for snapshot SMSMAN.DIC_AREA Mapper 接口
  *
  * @author Blade
- * @since 2019-06-28
+ * @since 2019-07-23
  */
-public interface IsmgMapper extends BaseMapper<Ismg> {
+public interface DicAreaMapper extends BaseMapper<DicArea> {
 
-	/**
-	 * 自定义分页
-	 *
-	 * @param page
-	 * @param ismg
-	 * @return
-	 */
-	List<IsmgVO> selectIsmgPage(IPage page, IsmgVO ismg);
 
-	List<Ismg> dic(List<ChannelResource> channelResources);
-
+	String getAreaCode(@Param("dicArea") DicArea dicArea);
 }

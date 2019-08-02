@@ -40,14 +40,18 @@
     </resultMap>
 
 
-    <resultMap id="dictResultMap" type="org.springblade.system.entity.Ismg">
-        <id column="ISMG_ID" property="ismgId"/>
-        <result column="ISMG_NAME" property="ismgName"/>
+    <resultMap id="dictResultMap" type="org.springblade.system.vo.IsmgVO">
+        <id column="ISMG_ID" property="dictKey"/>
+        <result column="ISMG_NAME" property="dictValue"/>
     </resultMap>
 
 
     <select id="dic" resultMap="dictResultMap">
        SELECT ismg_id,ismg_name from CM_ISMG
+        WHERE  ismg_id in
+        <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+            #{item.ismgId}
+        </foreach>
     </select>
 
 

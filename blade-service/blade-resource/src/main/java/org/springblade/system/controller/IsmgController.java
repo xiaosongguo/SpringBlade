@@ -25,8 +25,11 @@ import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
+import org.springblade.core.tool.utils.SpringUtil;
+import org.springblade.system.entity.ChannelResource;
 import org.springblade.system.entity.Ismg;
 import org.springblade.system.feign.IDictClient;
+import org.springblade.system.service.IChannelResourceService;
 import org.springblade.system.service.IIsmgService;
 import org.springblade.system.vo.IsmgVO;
 import org.springblade.system.wrapper.IsmgWrapper;
@@ -38,6 +41,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * 网关表 控制器
@@ -131,7 +135,8 @@ public class IsmgController extends BladeController {
 	@GetMapping("/dic")
 	@ApiOperation(value = "网关id与名称", notes = "", position = 2)
 	public R dic() {
-		return R.data(ismgService.dic());
+		List<ChannelResource> channelResources = SpringUtil.getBean(IChannelResourceService.class).list();
+		return R.data(ismgService.dic(channelResources));
 	}
 
 	

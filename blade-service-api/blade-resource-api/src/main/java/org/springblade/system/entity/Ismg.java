@@ -36,7 +36,7 @@ import java.time.LocalDateTime;
 @Data
 @TableName("CM_ISMG")
 @ApiModel(value = "Ismg对象", description = "网关表")
-@KeySequence(value = "SEQ_CM_ISMG", clazz = Long.class)
+@KeySequence(value = "SEQ_CM_ISMG", clazz = Integer.class)
 public class Ismg implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -46,7 +46,7 @@ public class Ismg implements Serializable {
 	 */
 	@ApiModelProperty(value = "网关ID")
 	@TableId(value = "ISMG_ID",type = IdType.INPUT)
-	private Long ismgId;
+	private Integer ismgId;
 	/**
 	 * 网关名称
 	 */

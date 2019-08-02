@@ -17,6 +17,7 @@ package org.springblade.system.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.springblade.system.entity.ChannelResource;
 import org.springblade.system.entity.Ismg;
 import org.springblade.system.vo.IsmgVO;
 
@@ -39,5 +40,7 @@ public interface IIsmgService extends IService<Ismg> {
 	 */
 	IPage<IsmgVO> selectIsmgPage(IPage<IsmgVO> page, IsmgVO ismg);
 
-	List<Ismg> dic();
+	List<Ismg> dic(List<ChannelResource> channelResources);
+
+	String getSerialNum(String condition);
 }

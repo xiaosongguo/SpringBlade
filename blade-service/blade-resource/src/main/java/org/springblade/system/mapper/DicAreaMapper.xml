@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.system.mapper.DicAreaMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="dicAreaResultMap" type="org.springblade.system.entity.DicArea">
+        <result column="PROVINCE" property="province"/>
+        <result column="CITY" property="city"/>
+        <result column="AC" property="ac"/>
+    </resultMap>
+
+
+    <select id="getAreaCode" resultType="string">
+        select '0'|| ac ac
+          from DIC_AREA t
+          <where>
+              AND province = #{dicArea.province}
+              AND ROWNUM = 1
+          </where>
+    </select>
+
+</mapper>
