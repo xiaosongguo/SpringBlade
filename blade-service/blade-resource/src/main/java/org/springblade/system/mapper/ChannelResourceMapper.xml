@@ -34,18 +34,32 @@
         <result column="REMARK" property="remark"/>
     </resultMap>
 
-    <resultMap id="channelResourceVO" type="org.springblade.system.vo.ChannelResourceVO" extends="channelResourceResultMap">
-
+    <resultMap id="channelResourceVO" type="org.springblade.system.vo.ChannelResourceVO" >
     </resultMap>
 
 
-    <select id="selectChannelResourcePage" resultMap="channelResourceResultMap">
-        select * from EXT_CHANNEL_RESOURCE where is_deleted = 0
+    <select id="selectChannelResourcePage" resultMap="channelResourceVO">
+         SELECT t.*, s.dept_name supplierName
+          from EXT_CHANNEL_RESOURCE t
+          LEFT JOIN blade_user c ON c.id = t.supplier_id
+          LEFT JOIN blade_dept s  ON s.id = c.dept_id
+        <where>
+            and c.is_deleted = 0
+            <if test="channelResource.tenantCode != null">
+                and c.tenant_code = #{channelResource.tenantCode}
+            </if>
+            <if test="channelResource.supplierType != null">
+                and t.supplier_type = #{channelResource.supplierType}
+            </if>
+            <if test="channelResource.ismgId != null">
+                and t.ismg_id = #{channelResource.ismgId}
+            </if>
+        </where>
     </select>
 
 
     <select id="selectChannels" resultMap="channelResourceVO">
-        SELECT t.* from ext_channel_resource t
+        SELECT t.*,c.unit_price from ext_channel_resource t
         INNER JOIN ext_quote_detail c ON c.channel_id = t.id
         INNER JOIN ext_quote s ON s.id = c.quite_id
         <where>

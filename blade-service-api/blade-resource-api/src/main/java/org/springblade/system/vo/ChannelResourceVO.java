@@ -32,4 +32,9 @@ import io.swagger.annotations.ApiModel;
 public class ChannelResourceVO extends ChannelResource {
 	private static final long serialVersionUID = 1L;
 
+	private Double unitPrice;
+
+	private String supplierName;
+
+	private String tenantCode;
 }
