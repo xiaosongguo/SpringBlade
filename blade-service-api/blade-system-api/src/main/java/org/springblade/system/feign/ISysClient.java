@@ -18,8 +18,11 @@ package org.springblade.system.feign;
 import org.springblade.core.launch.constant.AppConstant;
 import org.springblade.system.entity.Dept;
 import org.springblade.system.entity.Role;
+import org.springblade.system.entity.Tenant;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -79,5 +82,22 @@ public interface ISysClient {
 	 */
 	@GetMapping(API_PREFIX + "/getRole")
 	Role getRole(@RequestParam("id") Integer id);
+
+	/**
+	 *  根据租户编号和角色别名，获取
+	 * @param role
+	 * @return
+	 */
+	@GetMapping(API_PREFIX + "/getRoleIds")
+	String getRoleIds(@RequestBody  Role role);
+
+	/**
+	 * 新增供应商租户
+	 * @param tenant
+	 * @return
+	 */
+	@PostMapping(API_PREFIX + "/saveSupplierTenant")
+	Tenant saveSupplierTenant(@RequestBody Tenant tenant);
+
 
 }

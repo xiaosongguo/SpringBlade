@@ -36,4 +36,7 @@ public class IsmgVO extends Ismg {
 
 	private  Long channelId;
 
+	private String dictValue;//字典lable
+
+	private Integer dictKey;//字典value
 }

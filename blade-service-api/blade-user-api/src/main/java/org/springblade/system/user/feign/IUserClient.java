@@ -18,6 +18,7 @@ package org.springblade.system.user.feign;
 
 import org.springblade.core.launch.constant.AppConstant;
 import org.springblade.core.tool.api.R;
+import org.springblade.system.user.entity.User;
 import org.springblade.system.user.entity.UserInfo;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,4 +47,12 @@ public interface IUserClient {
 	@GetMapping(API_PREFIX + "/user-info")
 	R<UserInfo> userInfo(@RequestParam("tenantCode") String tenantCode, @RequestParam("account") String account, @RequestParam("password") String password);
 
+	/**
+	 * 获取用户
+	 *
+	 * @param id 主键
+	 * @return Role
+	 */
+	@GetMapping(API_PREFIX + "/getUser")
+	User getUser(@RequestParam("id") Integer id);
 }

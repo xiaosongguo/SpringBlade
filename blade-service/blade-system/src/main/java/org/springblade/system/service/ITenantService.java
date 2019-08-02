@@ -43,4 +43,11 @@ public interface ITenantService extends BaseService<Tenant> {
 	 */
 	boolean saveTenant(Tenant tenant);
 
+	/**
+	 * 新增供应商租户
+	 * @param tenant
+	 * @return
+	 */
+	Tenant saveSupplierTenant(Tenant tenant);
+
 }

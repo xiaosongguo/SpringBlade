@@ -17,6 +17,7 @@ package org.springblade.system.feign;
 
 import org.springblade.system.entity.Dept;
 import org.springblade.system.entity.Role;
+import org.springblade.system.entity.Tenant;
 import org.springframework.stereotype.Component;
 
 /**
@@ -48,6 +49,16 @@ public class ISysClientFallback implements ISysClient {
 
 	@Override
 	public Role getRole(Integer id) {
+		return null;
+	}
+
+	@Override
+	public String getRoleIds(Role role) {
+		return null;
+	}
+
+	@Override
+	public Tenant saveSupplierTenant(Tenant tenant) {
 		return null;
 	}
 }
