@@ -16,67 +16,70 @@
 package org.springblade.system.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.KeySequence;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.experimental.Accessors;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
- * 签名与端口实体类
+ * 路由详表实体类
  *
  * @author Blade
- * @since 2019-06-28
+ * @since 2019-07-24
  */
 @Data
-@Accessors(chain = true)
-@TableName("CM_SIGN_ISMG")
-@ApiModel(value = "SignIsmg对象", description = "签名与端口")
-@KeySequence(value = "SEQ_OBJ_SN", clazz = Integer.class)
-public class SignIsmg implements Serializable {
+@TableName("CM_ROUTE_ISMG")
+@ApiModel(value = "RouteIsmg对象", description = "路由详表")
+public class RouteIsmg implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@TableId(value = "SIGN_ID",type = IdType.INPUT)
-	private Integer signId;
 	/**
-	 * 签名
+	 * 路由ID
 	 */
-	@ApiModelProperty(value = "签名")
-	@TableField("SIGN_NAME")
-	private String signName;
+	@ApiModelProperty(value = "路由ID")
+	@TableId(value = "ROUTE_ID",type = IdType.INPUT)
+	private Integer routeId;
 	/**
-	 * 所属网关
+	 * 网关ID
 	 */
-	@ApiModelProperty(value = "所属网关")
+	@ApiModelProperty(value = "网关ID")
 	@TableField("ISMG_ID")
 	private Integer ismgId;
 	/**
-	 * 发送端口
+	 * 运营商
 	 */
-	@ApiModelProperty(value = "发送端口")
-	@TableField("SRC_ID")
-	private String srcId;
+	@ApiModelProperty(value = "运营商")
+	@TableField("OPERATOR")
+	private Integer operator;
 	/**
-	 * 0停用1可用2测试用3同用户验证主端口截取子端口4同签名固定主端口截取子端口
+	 * 匹配优先级
 	 */
-	@ApiModelProperty(value = "0停用1可用2测试用3同用户验证主端口截取子端口4同签名固定主端口截取子端口")
-	@TableField("IS_ENABLED")
-	private Integer isEnabled;
+	@ApiModelProperty(value = "匹配优先级")
+	@TableField("PRIORITY")
+	private Integer priority;
 	/**
-	 * 创建时间
+	 * 发送失败自动切换 0：不重发1：全部重发2：发送失败重发3：回执失败重发
 	 */
-	@ApiModelProperty(value = "创建时间")
-	@TableField("CREATE_TIME")
-	private LocalDateTime createTime;
-	@TableField("FEE_NUMBER")
-	private String feeNumber;
+	@ApiModelProperty(value = "发送失败自动切换 0：不重发1：全部重发2：发送失败重发3：回执失败重发")
+	@TableField("AUTO_CHANGE")
+	private Integer autoChange;
+	/**
+	 * 分配百分比
+	 */
+	@ApiModelProperty(value = "分配百分比")
+	@TableField("RATIO")
+	private Double ratio;
+	/**
+	 * 按回执重发1是0否关联cm_receipt_resend
+	 */
+	@ApiModelProperty(value = "按回执重发1是0否关联cm_receipt_resend")
+	@TableField("RECEIPT_RESEND")
+	private Integer receiptResend;
 
 
 }

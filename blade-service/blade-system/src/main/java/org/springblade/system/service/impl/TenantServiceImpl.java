@@ -83,6 +83,25 @@ public class TenantServiceImpl extends BaseServiceImpl<TenantMapper, Tenant> imp
 		return super.saveOrUpdate(tenant);
 	}
 
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public Tenant saveSupplierTenant(Tenant tenant) {
+		List<Tenant> tenants = baseMapper.selectList(Wrappers.<Tenant>query().lambda().eq(Tenant::getIsDeleted, BladeConstant.DB_NOT_DELETED));
+		List<String> codes = tenants.stream().map(Tenant::getTenantCode).collect(Collectors.toList());
+		String tenantCode = getTenantCode(codes);
+		tenant.setTenantCode(tenantCode);
+		// 新建租户对应的默认部门
+		Dept dept = new Dept();
+		dept.setTenantCode(tenantCode);
+		dept.setParentId(0);
+		dept.setDeptName(tenant.getTenantName());
+		dept.setFullName(tenant.getTenantName());
+		dept.setSort(2);
+		dept.setIsDeleted(0);
+		deptMapper.insert(dept);
+		return super.saveOrUpdate(tenant)?tenant:null;
+	}
+
 	private String getTenantCode(List<String> codes) {
 		String code = tenantId.generate();
 		if (codes.contains(code)) {

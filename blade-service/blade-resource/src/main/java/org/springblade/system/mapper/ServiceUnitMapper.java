@@ -13,24 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springblade.system.user.dto;
+package org.springblade.system.mapper;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import org.springblade.system.user.entity.User;
+import com.baomidou.dynamic.datasource.annotation.DS;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.springblade.system.entity.ServiceUnit;
+
+import static org.springblade.common.constant.CommonConstant.SMSMAN;
 
 /**
- * 数据传输对象实体类
+ *  Mapper 接口
  *
- * @author Chill
+ * @author Blade
+ * @since 2019-07-29
  */
-@Data
-@EqualsAndHashCode(callSuper = true)
-public class UserDTO extends User {
-	private static final long serialVersionUID = 1L;
+@DS(SMSMAN)
+public interface ServiceUnitMapper extends BaseMapper<ServiceUnit> {
 
-	private String imgCode;
-
-	private String smsCode;
 
 }

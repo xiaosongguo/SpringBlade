@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.system.mapper.ServiceUnitMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="serviceUnitResultMap" type="org.springblade.system.entity.ServiceUnit">
+        <id column="SU_ID" property="suId"/>
+        <result column="SYSTEM_NAME" property="systemName"/>
+        <result column="PM_NODE" property="pmNode"/>
+        <result column="SU_NAME" property="suName"/>
+        <result column="SU_TYPE" property="suType"/>
+        <result column="ENABLED" property="enabled"/>
+        <result column="SU_IP" property="suIp"/>
+        <result column="SU_RPC_PORT" property="suRpcPort"/>
+        <result column="SU_HTTP_PORT" property="suHttpPort"/>
+        <result column="ISMG_IDS" property="ismgIds"/>
+        <result column="ORDER_TO_DB" property="orderToDb"/>
+        <result column="AUTO_VERIFY" property="autoVerify"/>
+        <result column="CEP_SERVER" property="cepServer"/>
+        <result column="SU_CONFIG" property="suConfig"/>
+    </resultMap>
+
+</mapper>

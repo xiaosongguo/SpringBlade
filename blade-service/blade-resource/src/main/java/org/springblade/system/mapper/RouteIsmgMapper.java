@@ -13,24 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springblade.system.user.dto;
+package org.springblade.system.mapper;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import org.springblade.system.user.entity.User;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.springblade.system.entity.RouteIsmg;
 
 /**
- * 数据传输对象实体类
+ * 路由详表 Mapper 接口
  *
- * @author Chill
+ * @author Blade
+ * @since 2019-07-24
  */
-@Data
-@EqualsAndHashCode(callSuper = true)
-public class UserDTO extends User {
-	private static final long serialVersionUID = 1L;
+public interface RouteIsmgMapper extends BaseMapper<RouteIsmg> {
 
-	private String imgCode;
-
-	private String smsCode;
 
 }

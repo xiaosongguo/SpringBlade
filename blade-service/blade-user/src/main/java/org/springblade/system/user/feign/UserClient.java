@@ -17,9 +17,11 @@ package org.springblade.system.user.feign;
 
 import lombok.AllArgsConstructor;
 import org.springblade.core.tool.api.R;
+import org.springblade.system.user.entity.User;
 import org.springblade.system.user.entity.UserInfo;
 import org.springblade.system.user.service.IUserService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -37,6 +39,11 @@ public class UserClient implements IUserClient {
 	@GetMapping(API_PREFIX + "/user-info")
 	public R<UserInfo> userInfo(String tenantCode, String account, String password) {
 		return R.data(service.userInfo(tenantCode, account, password));
+	}
+	@Override
+	@GetMapping(API_PREFIX + "/getUser")
+	public User getUser(@RequestParam("id") Integer id){
+		return service.getById(id);
 	}
 
 }

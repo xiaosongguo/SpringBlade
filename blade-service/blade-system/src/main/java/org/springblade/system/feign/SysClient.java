@@ -16,13 +16,20 @@
 package org.springblade.system.feign;
 
 import lombok.AllArgsConstructor;
+import org.springblade.core.tool.utils.StringUtil;
 import org.springblade.system.entity.Dept;
 import org.springblade.system.entity.Role;
+import org.springblade.system.entity.Tenant;
 import org.springblade.system.service.IDeptService;
 import org.springblade.system.service.IRoleService;
+import org.springblade.system.service.ITenantService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 系统服务Feign实现类
@@ -37,6 +44,8 @@ public class SysClient implements ISysClient {
 	IDeptService deptService;
 
 	IRoleService roleService;
+
+	ITenantService tenantService;
 
 	@Override
 	@GetMapping(API_PREFIX + "/getDeptName")
@@ -66,5 +75,23 @@ public class SysClient implements ISysClient {
 	@GetMapping(API_PREFIX + "/getRole")
 	public Role getRole(Integer id) {
 		return roleService.getById(id);
+	}
+
+	@Override
+	@GetMapping(API_PREFIX + "/getRoleIds")
+	public String getRoleIds(Role role) {
+		List<Integer> roleIds = roleService.lambdaQuery()
+			.eq(Role::getTenantCode, role.getTenantCode())
+			.in(Role::getRoleAlias, role.getRoleAlias())
+			.select(Role::getId)
+			.list().stream().map(r -> r.getId()).collect(Collectors.toList());
+		return StringUtil.join(roleIds);
+
+	}
+
+	@Override
+	@PostMapping(API_PREFIX + "/saveSupplierTenant")
+	public Tenant saveSupplierTenant(Tenant tenant) {
+		return tenantService.saveSupplierTenant(tenant);
 	}
 }
