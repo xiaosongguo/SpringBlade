@@ -65,6 +65,7 @@
             <if test="bill.userId !=null">
                 and c.user_id = #{bill.userId}
             </if>
+            and t.status > 0
         </where>
         GROUP BY TRUNC(c.bill_month, 'mm'), c.user_id, c.bill_status
     </select>

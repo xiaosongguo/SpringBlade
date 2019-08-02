@@ -52,7 +52,7 @@ public class Bill implements Serializable {
 	 */
 	@ApiModelProperty(value = "网关ID")
 	@TableField("ISMG_ID")
-	private Long ismgId;
+	private Integer ismgId;
 	/**
 	 * 供应商Id
 	 */

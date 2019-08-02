@@ -23,7 +23,12 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springblade.system.enums.BusiTypeEnum;
+import org.springblade.system.enums.OperatorTypeEnum;
+import org.springblade.system.enums.ProtocolTypeEnum;
+import org.springblade.system.enums.SrcTypeEnum;
 
+import javax.validation.constraints.Digits;
 import java.io.Serializable;
 
 /**
@@ -47,7 +52,7 @@ public class ChannelResource implements Serializable {
 	 */
 	@ApiModelProperty(value = "供应商类型")
 	@TableField("SUPPLIER_TYPE")
-	private Integer supplierType;
+	private OperatorTypeEnum supplierType;
 	/**
 	 * 供应商名称
 	 */
@@ -59,13 +64,13 @@ public class ChannelResource implements Serializable {
 	 */
 	@ApiModelProperty(value = "企业号")
 	@TableField("ENTERPRISE_NUMBER")
-	private Long enterpriseNumber;
+	private String enterpriseNumber;
 	/**
 	 * 接入号
 	 */
 	@ApiModelProperty(value = "接入号")
 	@TableField("ACCESS_NUMBER")
-	private Long accessNumber;
+	private String accessNumber;
 	/**
 	 * 连接IP
 	 */
@@ -83,7 +88,7 @@ public class ChannelResource implements Serializable {
 	 */
 	@ApiModelProperty(value = "协议类型")
 	@TableField("PROTOCOL_TYPE")
-	private Integer protocolType;
+	private ProtocolTypeEnum protocolType;
 	/**
 	 * 协议版本
 	 */
@@ -143,13 +148,13 @@ public class ChannelResource implements Serializable {
 	 */
 	@ApiModelProperty(value = "业务类型")
 	@TableField("BUSINESS_TYPE")
-	private Integer businessType;
+	private BusiTypeEnum businessType;
 	/**
 	 * 码号属性
 	 */
 	@ApiModelProperty(value = "码号属性")
 	@TableField("CODE_TYPE")
-	private Integer codeType;
+	private SrcTypeEnum codeType;
 	/**
 	 * 码号位长
 	 */
@@ -209,7 +214,20 @@ public class ChannelResource implements Serializable {
 	 */
 	@ApiModelProperty(value = "网关ID")
 	@TableField("ISMG_ID")
-	private Long ismgId;
+	private Integer ismgId;
+	/**
+	 * 联通回执端口
+	 */
+	@ApiModelProperty(value = "联通回执端口")
+	@TableField("RECEIPT_PORT")
+	private Integer receiptPort;
+	/**
+	 * SGIP节点ID
+	 */
+	@ApiModelProperty(value = "SGIP节点ID")
+	@TableField("SGIP_NODE_ID")
+	@Digits(integer = 19, fraction = 0)
+	private Long sgipNodeId;
 
 
 }

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.system.mapper.ChannelRegularMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="channelRegularResultMap" type="org.springblade.system.entity.ChannelRegular">
+        <id column="CHANNEL_ID" property="channelId"/>
+        <result column="CHANNEL_NAME" property="channelName"/>
+        <result column="CHANNEL_TYPE" property="channelType"/>
+        <result column="CHANNEL_LOCAL_PROVINCE" property="channelLocalProvince"/>
+        <result column="CHANNEL_LOCAL_OPERATOR" property="channelLocalOperator"/>
+        <result column="CHANNEL_SUPPORT_OPERATOR" property="channelSupportOperator"/>
+        <result column="CHANNEL_SMS_MAIN_NUMBER" property="channelSmsMainNumber"/>
+        <result column="CHANNEL_APPLY_COMPANY" property="channelApplyCompany"/>
+        <result column="CHANNEL_CHARACTER" property="channelCharacter"/>
+        <result column="CHANNEL_USERS" property="channelUsers"/>
+        <result column="CHANNEL_SPID" property="channelSpid"/>
+        <result column="CHANNEL_STATUS" property="channelStatus"/>
+        <result column="CHANNEL_DIS_REASON" property="channelDisReason"/>
+        <result column="TIME_TO_INIT" property="timeToInit"/>
+        <result column="TIME_TO_ACCESS" property="timeToAccess"/>
+        <result column="TIME_TO_WORK" property="timeToWork"/>
+        <result column="TIME_TO_DISABLE" property="timeToDisable"/>
+        <result column="CONTACT_OF_ACCESS" property="contactOfAccess"/>
+        <result column="CONTACT_OF_OPERATOR" property="contactOfOperator"/>
+        <result column="CONTACT_MOBILE" property="contactMobile"/>
+        <result column="CONTACT_EMAIL" property="contactEmail"/>
+        <result column="CONTACT_QQ" property="contactQq"/>
+        <result column="CONTACT_WECHAT" property="contactWechat"/>
+        <result column="INTER_PROTOCOL" property="interProtocol"/>
+        <result column="INTER_IP" property="interIp"/>
+        <result column="INTER_PORT" property="interPort"/>
+        <result column="INTER_USER" property="interUser"/>
+        <result column="INTER_PASSWORD" property="interPassword"/>
+        <result column="BILL_METHODS" property="billMethods"/>
+        <result column="BILL_PRICE" property="billPrice"/>
+        <result column="BILL_TYPE" property="billType"/>
+        <result column="BILL_DESCRIPTION" property="billDescription"/>
+        <result column="BILL_BALANCE" property="billBalance"/>
+        <result column="BILL_TIME" property="billTime"/>
+        <result column="COMPLAIN_NUMBER_PER_MI" property="complainNumberPerMi"/>
+        <result column="COMPLAIN_NUMBER" property="complainNumber"/>
+        <result column="LMS_SUPPORT" property="lmsSupport"/>
+        <result column="LMS_HEAD_SIZE" property="lmsHeadSize"/>
+        <result column="LMS_SIGN_TYPE" property="lmsSignType"/>
+        <result column="RECE_IS_SUPPORT" property="receIsSupport"/>
+        <result column="RECE_REPORT_SUPPORT" property="receReportSupport"/>
+        <result column="SIGN_TYPE" property="signType"/>
+        <result column="SIGN_REPLACE" property="signReplace"/>
+        <result column="SIGN_SIZE" property="signSize"/>
+        <result column="SIGN_WHETHER" property="signWhether"/>
+        <result column="CODE_SIZE" property="codeSize"/>
+        <result column="CODE_CHILD_TYPE" property="codeChildType"/>
+        <result column="LIMIT_ARRIVE_PROV" property="limitArriveProv"/>
+        <result column="LIMIT_SHIELD_LOCATION" property="limitShieldLocation"/>
+        <result column="LIMIT_ENABLE_TIME" property="limitEnableTime"/>
+        <result column="LIMIT_SEND_TIME" property="limitSendTime"/>
+        <result column="LIMIT_SEND_SPEED" property="limitSendSpeed"/>
+        <result column="LIMIT_LINK_NUM" property="limitLinkNum"/>
+        <result column="LIMIT_DAILY_NUM" property="limitDailyNum"/>
+        <result column="LIMIT_MONTHLY_NUM" property="limitMonthlyNum"/>
+        <result column="LIMIT_SEND_FREQUENCY" property="limitSendFrequency"/>
+        <result column="LIMIT_CONTENT_LENGTH" property="limitContentLength"/>
+        <result column="LIMIT_SEND_PROFESSION" property="limitSendProfession"/>
+        <result column="LIMIT_SEND_VERIFY" property="limitSendVerify"/>
+        <result column="LIMIT_SEND_MARKETING" property="limitSendMarketing"/>
+        <result column="LIMIT_PERSONAL_AUDIT" property="limitPersonalAudit"/>
+        <result column="LIMIT_KEYWORD" property="limitKeyword"/>
+        <result column="LIMIT_MASS_NUMBER" property="limitMassNumber"/>
+        <result column="LIMIT_BLACK" property="limitBlack"/>
+        <result column="REMARK" property="remark"/>
+        <result column="BILL_CT_PRICE" property="billCtPrice"/>
+        <result column="BILL_CU_PRICE" property="billCuPrice"/>
+        <result column="BILL_CM_PRICE" property="billCmPrice"/>
+        <result column="ISMG_ID" property="ismgId"/>
+        <result column="INTER_FILENAME" property="interFilename"/>
+        <result column="CHANNEL_OPERATOR_NAME" property="channelOperatorName"/>
+        <result column="OPERATOR_BALANCE" property="operatorBalance"/>
+    </resultMap>
+
+    <update id="updateBatchByIsmgId" parameterType="list">
+        <foreach collection="list" item="item" index="index" open="begin" close="" separator=";">
+            update CM_CHANNEL_REGULAR
+            <set>
+                <if test="item.billPrice !=null">
+                     BILL_PRICE = #{item.billPrice},
+                </if>
+                <if test="item.billCmPrice !=null">
+                     BILL_CM_PRICE = #{item.billCmPrice},
+                </if>
+                <if test="item.billCuPrice !=null">
+                     BILL_CU_PRICE = #{item.billCuPrice},
+                </if>
+                <if test="item.billCtPrice !=null">
+                     BILL_CT_PRICE = #{item.billCtPrice},
+                </if>
+            </set>
+            where ISMG_ID = ${item.ismgId}
+        </foreach>
+        ;end;
+    </update>
+
+
+</mapper>
