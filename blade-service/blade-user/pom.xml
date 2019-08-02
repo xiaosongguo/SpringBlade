@@ -36,6 +36,10 @@
             <artifactId>blade-dict-api</artifactId>
             <version>${blade.project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-httpclient</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

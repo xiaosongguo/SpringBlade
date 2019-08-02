@@ -19,11 +19,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.AllArgsConstructor;
+import org.springblade.core.secure.auth.AuthFun;
 import org.springblade.core.secure.utils.SecureUtil;
-import org.springblade.core.tool.constant.RoleConstant;
+import org.springblade.core.tool.constant.BladeConstant;
 import org.springblade.core.tool.node.ForestNodeMerger;
-import org.springblade.core.tool.utils.CollectionUtil;
-import org.springblade.core.tool.utils.Func;
 import org.springblade.system.entity.Role;
 import org.springblade.system.entity.RoleMenu;
 import org.springblade.system.mapper.RoleMapper;
@@ -49,6 +48,8 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
 
 	IRoleMenuService roleMenuService;
 
+	AuthFun authFun;
+
 	@Override
 	public IPage<RoleVO> selectRolePage(IPage<RoleVO> page, RoleVO role) {
 		return page.setRecords(baseMapper.selectRolePage(page, role));
@@ -57,11 +58,15 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
 	@Override
 	public List<RoleVO> tree(String tenantCode) {
 		String userRole = SecureUtil.getUserRole();
-		String excludeRole = null;
-		if (!CollectionUtil.contains(Func.toStrArray(userRole), RoleConstant.ADMIN)) {
-			excludeRole = RoleConstant.ADMIN;
+		String includeRole = null;
+		if (!authFun.denyAll()) {
+			includeRole = userRole;
 		}
-		return ForestNodeMerger.merge(baseMapper.tree(tenantCode, excludeRole));
+		if(authFun.isSupplier() || authFun.permitAll()){
+			tenantCode = BladeConstant.ADMIN_TENANT_CODE;
+		}
+
+		return ForestNodeMerger.merge(baseMapper.tree(tenantCode, includeRole));
 	}
 
 	@Override

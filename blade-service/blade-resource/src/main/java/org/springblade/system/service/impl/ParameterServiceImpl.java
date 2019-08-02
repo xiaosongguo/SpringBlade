@@ -13,33 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springblade.system.vo;
+package org.springblade.system.service.impl;
 
-import io.swagger.annotations.ApiModel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import org.springblade.system.entity.Quote;
-import org.springblade.system.entity.QuoteDetail;
+import com.baomidou.dynamic.datasource.annotation.DS;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springblade.system.entity.Parameter;
+import org.springblade.system.mapper.ParameterMapper;
+import org.springblade.system.service.IParameterService;
+import org.springframework.stereotype.Service;
 
-import java.util.List;
+import static org.springblade.common.constant.CommonConstant.SMSMAN;
 
 /**
- * 视图实体类
+ * 系统参数表 服务实现类
  *
  * @author Blade
- * @since 2019-06-10
+ * @since 2019-07-24
  */
-@Data
-@EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "QuoteDetailVO对象", description = "QuoteDetailVO对象")
-public class QuoteVO extends Quote {
-	private static final long serialVersionUID = 1L;
+@Service
+@DS(SMSMAN)
+public class ParameterServiceImpl extends ServiceImpl<ParameterMapper, Parameter> implements IParameterService {
 
-	private List<QuoteDetail> quoteDetails;
 
-	private List<ChannelResourceVO> channelResources;
-
-	private Long ismgId;
-
-	private String tenantCode;
 }

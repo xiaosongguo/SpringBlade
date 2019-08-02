@@ -23,6 +23,7 @@ import lombok.AllArgsConstructor;
 import org.springblade.core.boot.ctrl.BladeController;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
+import org.springblade.core.secure.annotation.PreAuth;
 import org.springblade.core.secure.auth.AuthFun;
 import org.springblade.core.secure.utils.SecureUtil;
 import org.springblade.core.tool.api.R;
@@ -100,6 +101,9 @@ public class QuoteController extends BladeController {
 	@GetMapping("/page")
 	@ApiOperation(value = "分页", notes = "传入quote", position = 3)
 	public R<IPage<QuoteVO>> page(QuoteVO quote, Query query) {
+		if (authFun.hasAnyRole(RoleConstant.SUPPLIER)){
+			quote.setTenantCode(SecureUtil.getTenantCode());
+		}
 		IPage<QuoteVO> pages = quoteService.selectQuotePage(Condition.getPage(query), quote);
 		return R.data(pages);
 	}
@@ -118,6 +122,7 @@ public class QuoteController extends BladeController {
 	*/
 	@PostMapping("/update")
 	@ApiOperation(value = "修改", notes = "传入quote", position = 5)
+	@PreAuth(RoleConstant.HAS_ROLE_OPERATION)
 	public R update(@Valid @RequestBody Quote quote) {
 		boolean isSucc = false;
 		if (quote.getStatus() > 0) {
@@ -131,6 +136,7 @@ public class QuoteController extends BladeController {
 	*/
 	@PostMapping("/submit")
 	@ApiOperation(value = "新增或修改", notes = "传入quote", position = 6)
+	@PreAuth(RoleConstant.HAS_ROLE_OPERATION)
 	public R submit(@Valid @RequestBody Quote quote) {
 		return R.status(quoteService.saveOrUpdate(quote));
 	}
@@ -141,6 +147,7 @@ public class QuoteController extends BladeController {
 	*/
 	@PostMapping("/remove")
 	@ApiOperation(value = "删除", notes = "传入ids", position = 7)
+	@PreAuth(RoleConstant.HAS_ROLE_OPERATION)
 	public R remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {
 		return R.status(quoteService.removeByIds(Func.toIntList(ids)));
 	}
@@ -148,6 +155,7 @@ public class QuoteController extends BladeController {
 
 	@PostMapping("/review")
 	@ApiOperation(value = "审核", notes = "quoteDTO", position = 7)
+	@PreAuth(RoleConstant.HAS_ROLE_OPERATION)
 	public R review(@ApiParam(value = "quoteDTO", required = true) @RequestBody QuoteDTO quoteDTO) {
 		if (Objects.equals(null,quoteDTO.getId())){
 			return R.fail("id不能为空");

@@ -19,35 +19,33 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springblade.core.secure.utils.SecureUtil;
+import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.system.dto.QuoteDTO;
-import org.springblade.system.entity.ChannelResource;
-import org.springblade.system.entity.Ismg;
+import org.springblade.system.entity.ChannelRegular;
 import org.springblade.system.entity.Quote;
 import org.springblade.system.entity.QuoteDetail;
-import org.springblade.system.entity.SignIsmg;
+import org.springblade.system.entity.RouteIsmg;
+import org.springblade.system.enums.OperatorTypeEnum;
 import org.springblade.system.feign.IDictClient;
+import org.springblade.system.http.CommandRmiClient;
 import org.springblade.system.mapper.ChannelResourceMapper;
 import org.springblade.system.mapper.QuoteMapper;
-import org.springblade.system.service.IChannelResourceService;
-import org.springblade.system.service.IIsmgService;
+import org.springblade.system.service.IChannelRegularService;
 import org.springblade.system.service.IQuoteDetailService;
 import org.springblade.system.service.IQuoteService;
-import org.springblade.system.service.ISignIsmgService;
+import org.springblade.system.service.IRouteIsmgService;
 import org.springblade.system.vo.ChannelResourceVO;
-import org.springblade.system.vo.IsmgVO;
 import org.springblade.system.vo.QuoteVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  *  服务实现类
@@ -57,19 +55,21 @@ import java.util.stream.Collectors;
  */
 @Service
 @AllArgsConstructor
+@Slf4j
 public class QuoteServiceImpl extends ServiceImpl<QuoteMapper, Quote> implements IQuoteService {
 
 	private IQuoteDetailService quoteDetailService;
 
-	private IIsmgService ismgService;
-
-	private ISignIsmgService signIsmgService;
+	private IRouteIsmgService routeIsmgService;
 
 	private ChannelResourceMapper channelResourceMapper;
 
-	private IChannelResourceService channelResourceService;
-
 	private IDictClient dictClient;
+
+	private  CommandRmiClient commandRmiClient;
+
+	private IChannelRegularService channelRegularService;
+
 
 	@Override
 	public IPage<QuoteVO> selectQuotePage(IPage<QuoteVO> page, QuoteVO quote) {
@@ -84,95 +84,81 @@ public class QuoteServiceImpl extends ServiceImpl<QuoteMapper, Quote> implements
 		if (quoteDetails.isEmpty()){
 			return isSucc;
 		}
-		quoteDetails.stream().forEach(quoteDetail->quoteDetail.setQuiteId(quoteVO.getId()));
+		quoteDetails.forEach(quoteDetail->quoteDetail.setQuiteId(quoteVO.getId()));
 		isSucc = quoteDetailService.saveBatch(quoteVO.getQuoteDetails());
 		return isSucc;
 	}
 
 	@Override
-	@Transactional
 	public boolean review(QuoteDTO quoteDTO) {
 		boolean update = update(Wrappers.<Quote>lambdaUpdate()
 			.set(Quote::getStatus,quoteDTO.getStatus())
 			.eq(Quote::getId, quoteDTO.getId()));
-
 		if (quoteDTO.getStatus() == 1 ){
+			//选出报价的通道
 			List<ChannelResourceVO> channelResources = channelResourceMapper.selectChannels(quoteDTO.getId());
-			List<Ismg> ismgs = getIsmgs(channelResources);
-			boolean insertIsmg = ismgService.saveBatch(ismgs);
-			boolean updateChannel = updateChannelResources(ismgs, channelResources);
-			List<SignIsmg> signIsmgs = getSignIsmgs(ismgs);
-			boolean insertSignIsmg = signIsmgService.saveBatch(signIsmgs);
-			return update && insertIsmg && updateChannel && insertSignIsmg ;
+
+			//更新通道管理报价
+			List<ChannelRegular> channelRegulars = new ArrayList<>(channelResources.size());
+			channelResources.forEach(channelResource ->{
+				ChannelRegular channelRegular = new ChannelRegular();
+				channelRegular.setIsmgId(channelResource.getIsmgId());
+				Double unitPrice = channelResource.getUnitPrice();
+				OperatorTypeEnum operatorType = channelResource.getSupplierType();
+				if (operatorType == OperatorTypeEnum.YDLTDX){
+					channelRegular.setBillPrice(unitPrice);
+				}else if (operatorType == OperatorTypeEnum.YD){
+					channelRegular.setBillCmPrice(unitPrice);
+				}else if(operatorType == OperatorTypeEnum.LT){
+					channelRegular.setBillCuPrice(unitPrice);
+				}else if(operatorType == OperatorTypeEnum.DX){
+					channelRegular.setBillCtPrice(unitPrice);
+				}
+				channelRegulars.add(channelRegular);
+			});
+			channelRegularService.updateBatchByIsmgId(channelRegulars);
+			//插路由详情
+			List<RouteIsmg> routeIsmgs = getSignIsmgs(channelResources);
+			if (routeIsmgService.saveBatch(routeIsmgs)){
+				commandRmiClient.connecTion(new String[]{"CM_ROUTE_ISMG"});
+			}
+
 		}
 		return update ;
 
 	}
 
-	private boolean updateChannelResources(List<Ismg> ismgs, List<ChannelResourceVO> channelResources) {
-		List<ChannelResource> collect = new ArrayList<>();
-		ismgs.stream().forEach(ismg -> {
-			IsmgVO ismgVo = (IsmgVO) ismg;
-			channelResources.stream().forEach(channel -> {
-					if (channel.getId() == ismgVo.getChannelId()) {
-						channel.setIsmgId(ismgVo.getIsmgId());
-						collect.add(channel);
+
+	private List<RouteIsmg> getSignIsmgs(List<ChannelResourceVO> channelResources) {
+
+		List<RouteIsmg> routeIsmgs = new ArrayList<>();
+		channelResources.forEach(channelResource -> {
+			RouteIsmg routeIsmg = new RouteIsmg();
+			routeIsmg.setIsmgId(channelResource.getIsmgId());
+			routeIsmg.setPriority(300);
+			routeIsmg.setAutoChange(0);
+//			routeIsmg.setRatio();
+			routeIsmg.setReceiptResend(0);
+
+			if (channelResource.getSupplierType() == OperatorTypeEnum.YDLTDX){
+				dictClient.getList("triple_route").getData().forEach(dic->{
+						RouteIsmg copy = BeanUtil.copy(routeIsmg, RouteIsmg.class);
+						copy.setOperator(dic.getDictKey());
+						copy.setRouteId(Func.toInt(dic.getDictValue()));
+						routeIsmgs.add(copy);
 					}
-				}
-			);
-		});
-		return channelResourceService.updateBatchById(collect);
-	}
+				);
+			}else{
+				int operator = channelResource.getSupplierType().getOperator();
+				int routeId = Func.toInt(dictClient.getValue("triple_route", operator).getData());
+				routeIsmg.setRouteId(routeId);
+				routeIsmg.setOperator(operator);
+				routeIsmgs.add(routeIsmg);
+			}
 
-	/**
-	 * 根据通道资源信息生成网关表，并记录签名
-	 * @param channelResources
-	 * @return
-	 */
-	private List<Ismg> getIsmgs(List<ChannelResourceVO> channelResources) {
-		return channelResources.stream().map(channelResource -> {
-			IsmgVO ismg = new IsmgVO();
-			ismg.setIsmgName("ext_" + channelResource.getId());
-			ismg.setProtocol(dictClient.getValue("protocol_type", channelResource.getProtocolType()).getData());
-			ismg.setIp(channelResource.getConnectIp());
-			ismg.setPort(channelResource.getPort());
-			ismg.setLogonId(channelResource.getAccount());
-			ismg.setLogonPwd(channelResource.getPassword());
-			ismg.setSpid(Func.toStr(channelResource.getEnterpriseNumber()));
-			ismg.setPhone(Func.toStr(channelResource.getAccessNumber()));
-			ismg.setSpeed(channelResource.getChannelTps());
-			ismg.setEnable(1);
-			ismg.setBlackLevel("0-5");
-			ismg.setMinSendSize(0);
-			ismg.setMaxSendSize(1000);
-			ismg.setBlackLevel2("0-4");
-			ismg.setSignName(channelResource.getSignature());
-			ismg.setChannelId(channelResource.getId());
-			return ismg;
-		}).collect(Collectors.toList());
-	}
 
-	/**
-	 * 生成网关签名表数据
-	 * @param ismgs
-	 * @return
-	 */
-	private List<SignIsmg> getSignIsmgs(List<Ismg> ismgs) {
-		List<SignIsmg> signIsmgs = new ArrayList<>();
-		ismgs.stream().forEach(ismg->{
-			IsmgVO ismgVo = (IsmgVO) ismg;
-			Arrays.stream(ismgVo.getSignName().split(",|，")).forEach(sign->{
-					SignIsmg signIsmg = new SignIsmg();
-					signIsmg.setSignName(sign.trim());
-					signIsmg.setIsmgId(ismg.getIsmgId());
-					signIsmg.setSrcId(ismg.getPhone());
-					signIsmg.setIsEnabled(1);
-					signIsmg.setCreateTime(LocalDateTime.now());
-					signIsmgs.add(signIsmg);
-				}
-			);
 		});
-		return signIsmgs;
+		return routeIsmgs;
 	}
 
 

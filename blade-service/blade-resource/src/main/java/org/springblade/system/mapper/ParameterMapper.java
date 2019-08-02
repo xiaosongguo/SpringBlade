@@ -13,33 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springblade.system.vo;
+package org.springblade.system.mapper;
 
-import io.swagger.annotations.ApiModel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import org.springblade.system.entity.Quote;
-import org.springblade.system.entity.QuoteDetail;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.springblade.system.entity.Parameter;
 
 import java.util.List;
 
 /**
- * 视图实体类
+ * 系统参数表 Mapper 接口
  *
  * @author Blade
- * @since 2019-06-10
+ * @since 2019-07-24
  */
-@Data
-@EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "QuoteDetailVO对象", description = "QuoteDetailVO对象")
-public class QuoteVO extends Quote {
-	private static final long serialVersionUID = 1L;
+public interface ParameterMapper extends BaseMapper<Parameter> {
 
-	private List<QuoteDetail> quoteDetails;
+	/**
+	 * 自定义分页
+	 *
+	 * @param page
+	 * @param parameter
+	 * @return
+	 */
+	List<Parameter> selectParameterPage(IPage page, Parameter parameter);
 
-	private List<ChannelResourceVO> channelResources;
-
-	private Long ismgId;
-
-	private String tenantCode;
 }

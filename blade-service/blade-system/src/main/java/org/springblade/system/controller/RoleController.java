@@ -16,11 +16,16 @@
 package org.springblade.system.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import org.springblade.core.boot.ctrl.BladeController;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.secure.BladeUser;
+import org.springblade.core.secure.auth.AuthFun;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.constant.BladeConstant;
 import org.springblade.core.tool.node.INode;
@@ -29,7 +34,12 @@ import org.springblade.system.entity.Role;
 import org.springblade.system.service.IRoleService;
 import org.springblade.system.vo.RoleVO;
 import org.springblade.system.wrapper.RoleWrapper;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
@@ -48,6 +58,8 @@ import java.util.Map;
 public class RoleController extends BladeController {
 
 	private IRoleService roleService;
+
+	private AuthFun authFun;
 
 	/**
 	 * 详情
@@ -71,6 +83,9 @@ public class RoleController extends BladeController {
 	@ApiOperation(value = "列表", notes = "传入role", position = 2)
 	public R<List<INode>> list(@ApiIgnore @RequestParam Map<String, Object> role, BladeUser bladeUser) {
 		QueryWrapper<Role> queryWrapper = Condition.getQueryWrapper(role, Role.class);
+		if (authFun.isSupplier()){
+			bladeUser.setTenantCode(BladeConstant.ADMIN_TENANT_CODE);
+		}
 		List<Role> list = roleService.list((!bladeUser.getTenantCode().equals(BladeConstant.ADMIN_TENANT_CODE)) ? queryWrapper.lambda().eq(Role::getTenantCode, bladeUser.getTenantCode()) : queryWrapper);
 		RoleWrapper roleWrapper = new RoleWrapper(roleService);
 		return R.data(roleWrapper.listNodeVO(list));

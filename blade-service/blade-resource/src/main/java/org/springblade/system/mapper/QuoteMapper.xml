@@ -17,7 +17,14 @@
 
 
     <select id="selectQuotePage" resultMap="quoteResultMap">
-        select * from EXT_QUOTE where is_deleted = 0
+        select t.* from EXT_QUOTE t
+        LEFT JOIN blade_user c ON c.id = t.supplier_id
+        <where>
+            and c.is_deleted = 0
+            <if test="quote.tenantCode != null">
+                and c.tenant_code = #{quote.tenantCode}
+            </if>
+        </where>
     </select>
 
 </mapper>
