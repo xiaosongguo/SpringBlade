@@ -19,3 +19,20 @@ spring:
           url: ${smsman.datasource.dev.url}
           driver-class-name: oracle.jdbc.driver.OracleDriver
       p6spy: true
+  redis:
+    database: 5
+
+zwx:
+  command:
+    host: 192.168.3.231
+    port: 7001
+    content: UpdateAllConfig
+
+mybatis-plus:
+  type-enums-package: org.springblade.system.enums
+  global-config:
+    sql-parser-cache: true
+  configuration:
+    default-enum-type-handler: com.baomidou.mybatisplus.extension.handlers.EnumTypeHandler
+
+

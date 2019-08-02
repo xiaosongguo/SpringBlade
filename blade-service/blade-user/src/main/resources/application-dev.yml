@@ -8,3 +8,10 @@ spring:
     url: ${blade.datasource.dev.url}
     username: ${blade.datasource.dev.username}
     password: ${blade.datasource.dev.password}
+  redis:
+    database: 10
+
+feign:
+  httpclient:
+    enabled: true
+
