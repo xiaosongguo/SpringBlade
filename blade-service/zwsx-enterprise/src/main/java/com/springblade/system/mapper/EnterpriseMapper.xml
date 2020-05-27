@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.system.mapper.EnterpriseMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="enterpriseResultMap" type="org.springblade.system.entity.Enterprise">
+        <result column="ID" property="id"/>
+        <result column="USER_ID" property="userId"/>
+        <result column="LICENSE_NUM" property="licenseNum"/>
+        <result column="LAST_ANNUAL_TIME" property="lastAnnualTime"/>
+        <result column="CREATE_TIME" property="createTime"/>
+        <result column="REGEDIT_AMOUNT" property="regeditAmount"/>
+        <result column="REGEDIT_AMOUNT_UNIT" property="regeditAmountUnit"/>
+        <result column="LAST_SALE_AMOUNT" property="lastSaleAmount"/>
+        <result column="LAST_SALE_AMOUNT_UNIT" property="lastSaleAmountUnit"/>
+        <result column="OFFICE_PROVINCE" property="officeProvince"/>
+        <result column="OFFICE_CITY" property="officeCity"/>
+        <result column="OFFICE_ADDRESS" property="officeAddress"/>
+        <result column="STAFF_COUNT" property="staffCount"/>
+        <result column="ENTERPRISE_TYPE" property="enterpriseType"/>
+        <result column="BUSINESS_SCOPE" property="businessScope"/>
+        <result column="LEGAL_PERSON" property="legalPerson"/>
+        <result column="STATUS" property="status"/>
+        <result column="NAME" property="name"/>
+    </resultMap>
+
+
+    <select id="selectEnterprisePage" resultMap="enterpriseResultMap">
+        select * from EXT_ENTERPRISE
+    </select>
+
+</mapper>

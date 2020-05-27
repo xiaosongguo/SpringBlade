@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.system.mapper.FileManagerMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="fileManagerResultMap" type="org.springblade.system.entity.FileManager">
+        <result column="ID" property="id"/>
+        <result column="PATH" property="path"/>
+        <result column="NAME" property="name"/>
+        <result column="STATUS" property="status"/>
+        <result column="FILE_TYPE" property="fileType"/>
+        <result column="USER_ID" property="userId"/>
+        <result column="OWNER_ID" property="ownerId"/>
+        <result column="STATUS" property="status"/>
+    </resultMap>
+
+
+    <select id="selectFileManagerPage" resultMap="fileManagerResultMap">
+        select * from EXT_FILE_MANAGER where is_deleted = 0
+    </select>
+
+</mapper>

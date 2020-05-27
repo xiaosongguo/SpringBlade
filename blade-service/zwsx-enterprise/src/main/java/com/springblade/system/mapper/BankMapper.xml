@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.system.mapper.BankMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="bankResultMap" type="org.springblade.system.vo.BankVO">
+        <result column="ID" property="id"/>
+        <result column="USER_ID" property="userId"/>
+        <result column="LOCATION" property="location"/>
+        <result column="RECEIVER" property="receiver"/>
+        <result column="PROVINCE" property="province"/>
+        <result column="CITY" property="city"/>
+        <result column="ADDRESS" property="address"/>
+        <result column="BILL_TYPE" property="billType"/>
+        <result column="BRANCH_NAME" property="branchName"/>
+        <result column="NAME" property="name"/>
+        <result column="SWIFT_CODE" property="swiftCode"/>
+        <result column="ACCOUNT" property="account"/>
+        <result column="FILE_ID" property="fileId"/>
+        <collection property="fileManagers" columnPrefix="c_" ofType="org.springblade.system.entity.FileManager"
+                    resultMap="org.springblade.system.mapper.FileManagerMapper.fileManagerResultMap">
+        </collection>
+    </resultMap>
+
+    <select id="selectBank" resultMap="bankResultMap">
+        SELECT t.id,
+               t.user_id,
+               t.location,
+               t.receiver,
+               t.province,
+               t.city,
+               t.address,
+               t.bill_type,
+               t.branch_name,
+               t.name,
+               t.swift_code,
+               t.account,
+               c.id          c_id,
+               c.path        c_path,
+               c.name        c_name,
+               c.status      c_status,
+               c.file_type   c_file_type
+          from ext_bank t
+          LEFT JOIN ext_file_manager c
+            ON t.user_id = c.user_id
+           AND t.id = c.owner_id
+         WHERE t.user_id = #{bank.userId}
+    </select>
+
+</mapper>

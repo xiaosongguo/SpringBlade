@@ -1,0 +1,9 @@
+blade:
+  secure:
+    url:
+      exclude-patterns:
+        - /enterprise/**
+        - /certificate/**
+        - /file/**
+
+
