@@ -21,6 +21,7 @@
         <module>blade-system-api</module>
         <module>blade-user-api</module>
         <module>blade-resource-api</module>
+        <module>zwsx-enterprise-api</module>
     </modules>
 
     <dependencies>
