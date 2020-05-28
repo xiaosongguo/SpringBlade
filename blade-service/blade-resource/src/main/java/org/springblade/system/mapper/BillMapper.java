@@ -17,6 +17,7 @@ package org.springblade.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.apache.ibatis.annotations.Param;
 import org.springblade.system.dto.BillDTO;
 import org.springblade.system.entity.Bill;
 import org.springblade.system.vo.BillVO;
@@ -45,4 +46,7 @@ public interface BillMapper extends BaseMapper<Bill> {
 	List<BillVO> detail(IPage<BillVO> page, BillVO bill);
 
 	boolean createBills(List<Bill> bills);
+
+	boolean updateAmount(@Param("vestDate") String vestDate);
+
 }

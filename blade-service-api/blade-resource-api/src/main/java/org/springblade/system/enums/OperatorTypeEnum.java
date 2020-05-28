@@ -4,6 +4,10 @@ import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * 运营商类型
  */
@@ -34,5 +38,19 @@ public enum OperatorTypeEnum implements IEnum<Integer> {
 	@Override
 	public Integer getValue() {
 		return code;
+	}
+
+	public List<OperatorTypeEnum> getOperatorType() {
+		if (this != YDLTDX)
+			return Arrays.asList(new OperatorTypeEnum[] { this });
+		return Arrays.asList(new OperatorTypeEnum[] { YD, LT, DX });
+	}
+
+	public String getOperatorDesc() {
+		if (this != YDLTDX)
+			return getDescp();
+		return Arrays.<OperatorTypeEnum>asList(new OperatorTypeEnum[] { YD, LT, DX }).stream()
+			.map(operatorTypeEnum -> operatorTypeEnum.getDescp())
+			.collect(Collectors.joining("|", "[", "]"));
 	}
 }

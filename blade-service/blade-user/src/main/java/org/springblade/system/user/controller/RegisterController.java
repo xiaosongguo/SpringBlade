@@ -25,28 +25,21 @@ import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.constant.BladeConstant;
 import org.springblade.core.tool.constant.RoleConstant;
 import org.springblade.core.tool.utils.Func;
-import org.springblade.core.tool.utils.OkHttpUtil;
 import org.springblade.system.entity.Role;
-import org.springblade.system.entity.Tenant;
 import org.springblade.system.feign.ISysClient;
 import org.springblade.system.user.dto.UserDTO;
 import org.springblade.system.user.entity.User;
+import org.springblade.system.user.feign.IMailClient;
+import org.springblade.system.user.feign.ISmsClient;
 import org.springblade.system.user.service.IUserService;
 import org.springblade.system.user.util.RandomValidateCodeUtil;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
@@ -71,6 +64,10 @@ public class RegisterController extends BladeController {
 
 	private RedisTemplate redisTemplate;
 
+	private IMailClient mailClient;
+
+	private ISmsClient smsClient;
+
 
 	@ApiOperation(value = "判断用户存在", notes = "传入id", position = 1)
 	@GetMapping("/isExist")
@@ -86,27 +83,23 @@ public class RegisterController extends BladeController {
 	@ApiOperation(value = "注册", notes = "传入User", position = 2)
 	@Transactional
 	public R register(@RequestBody UserDTO user, HttpServletRequest request) {
-		if (!checkSmsCode(user.getSmsCode(), request.getSession())) {
+		if (!checkSmsCode(user.getSmsCode()) && !checkSmsCode(user.getMailCode())) {
 			return R.fail("验证码不正确");
-		}
-		Tenant tenant = new Tenant();
-		tenant.setTenantName(user.getTenantCode());
-		tenant = sysClient.saveSupplierTenant(tenant);
-		if (tenant == null){
-			return R.fail("新建租户失败");
 		}
 		Role role = new Role();
 		role.setTenantCode(BladeConstant.ADMIN_TENANT_CODE);
-		role.setRoleAlias(RoleConstant.SUPPLIER);
+		role.setRoleAlias(RoleConstant.TOURIST);
 		String roleIds = sysClient.getRoleIds(role);
 		user.setRoleId(roleIds);
-		user.setTenantCode(tenant.getTenantCode());
+		user.setTenantCode(BladeConstant.ADMIN_TENANT_CODE);
+		user.setCreateUser(100);
+		user.setUpdateUser(100);
 
 		boolean submit = userService.submit(user);
 		if (!submit) {
 			return R.fail("新建用户失败");
 		}
-		return R.data(tenant.getTenantCode(),"注册成功");
+		return R.data("注册成功，请在15天内填写企业信息");
 	}
 
 	@ApiOperation(value = "生成验证码", notes = "传入User", position = 3)
@@ -125,38 +118,57 @@ public class RegisterController extends BladeController {
 		return Objects.equals(random, imgCode);
 	}
 
-	private boolean checkSmsCode(String smsCode, HttpSession session) {
-		Object sessionId = getRequest().getSession().getAttribute(JSESSIONID);
-		if (sessionId == null){
+	private boolean checkSmsCode(String smsCode) {
+		Object sessionId = getRequest().getSession().getAttribute("JSESSIONID");
+		if (sessionId == null)
 			return false;
-		}
-		Object random = redisTemplate.opsForValue().get(sessionId);
-		log.debug("random:{},smsCode:{}",random,smsCode);
+		Object random = this.redisTemplate.opsForValue().get(sessionId);
+		log.debug("random:{},smsCode:{}", random, smsCode);
 		return Objects.equals(Func.toStr(random), smsCode);
 	}
 
 	@ApiOperation(value = "生成手机短信码", notes = "手机号码", position = 4)
 	@GetMapping(value = "/getSmsCode")
-	public void getSmsCode(@RequestParam("mobile") String phone) {
+	public R getSmsCode(@RequestParam("mobile") String phone) {
 		log.debug("phone:",phone);
+		if (Func.isBlank(phone)){
+			return R.fail("号码不能为空");
+		}
 		Object sessionId = getRequest().getSession().getAttribute(JSESSIONID);
 		if(sessionId!= null && redisTemplate.opsForValue().get(sessionId)!=null){
 			log.debug("不要重复点击");
-			return;
+			return R.fail("验证码有效时间10分钟，不要重复点击");
 		}
 		int smsCode = ThreadLocalRandom.current().nextInt(100000, 999999);
 		sessionId = UUID.randomUUID().toString().replace("-", "");
 
 		getRequest().getSession().setAttribute(JSESSIONID,sessionId);
 		redisTemplate.opsForValue().set(sessionId,smsCode,10, TimeUnit.MINUTES);
-		Map<String, String> params = new HashMap<>();
-		params.put("apName","v3gaol");
-		params.put("apPassword", "v3gaol");
-		params.put("calledNumber", phone);
-		params.put("content", "【中网信】您正在登录V3版网关支撑，验证码是:"+smsCode+"请妥善保管并尽快登录。");
-		String res = OkHttpUtil.post("http://192.168.3.231:18081/wgws/BatchSubmit", params);
-		log.debug(res);
-		log.debug("生成的验证码是：{}",smsCode);
+
+		String res = this.smsClient.sendSms(phone, "【中网信】您正在登录V3版网关支撑，验证码是:"+smsCode+"请妥善保管并尽快登录。");
+		log.info(res);
+		log.info("{} {}", phone, Integer.valueOf(smsCode));
+		return R.success("生成验证码成功！");
+	}
+
+	@ApiOperation(value = ", notes = ", position = 4)
+	@GetMapping({"/getMailCode"})
+	public R getMailCode(@RequestParam("mail") String mail) {
+		log.debug("mail:", mail);
+		Object sessionId = getRequest().getSession().getAttribute("JSESSIONID");
+		if (sessionId != null && this.redisTemplate.opsForValue().get(sessionId) != null) {
+			log.debug("不要重复点击");
+			return R.fail("邮件验证码有效时间10分钟，不要重复点击");
+		}
+		int mailCode = ThreadLocalRandom.current().nextInt(100000, 999999);
+		sessionId = UUID.randomUUID().toString().replace("-", "");
+		getRequest().getSession().setAttribute("JSESSIONID", sessionId);
+		redisTemplate.opsForValue().set(sessionId, Integer.valueOf(mailCode), 10L, TimeUnit.MINUTES);
+		boolean sendFlag = mailClient.sendSimpleMail(mail, "注册验证码", "【中网信】您正在登录V3版网关支撑，验证码是:" + mailCode + "请妥善保管并尽快登录。");
+		log.debug("{}", Integer.valueOf(mailCode));
+		if (!sendFlag)
+			return R.fail("邮件发送失败!");
+		return R.success("邮件发送成功,请确认!");
 	}
 
 

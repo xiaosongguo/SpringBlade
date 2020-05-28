@@ -61,4 +61,9 @@ public class ISysClientFallback implements ISysClient {
 	public Tenant saveSupplierTenant(Tenant tenant) {
 		return null;
 	}
+
+	@Override
+	public Dept saveDept(Dept paramDept) {
+		return null;
+	}
 }

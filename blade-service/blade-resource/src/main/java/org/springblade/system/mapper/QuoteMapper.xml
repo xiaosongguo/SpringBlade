@@ -24,6 +24,7 @@
             <if test="quote.tenantCode != null">
                 and c.tenant_code = #{quote.tenantCode}
             </if>
+            and t.supplier_id in (SELECT ID from blade_user START WITH ID = #{quote.supplierId} connect BY  prior id = create_user)
         </where>
     </select>
 

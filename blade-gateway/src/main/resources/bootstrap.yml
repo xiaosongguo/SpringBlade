@@ -1,6 +1,10 @@
 server:
   port: 80
 
+#配置日志地址
+logging:
+  config: classpath:log/logback_${blade.env}.xml
+
 # 需要配置的服务名
 blade:
   service:
@@ -8,41 +12,53 @@ blade:
     blade-desk: blade-desk
     blade-system: blade-system
     blade-user: blade-user
+    blade-resource: blade-resource
+    zwsx-enterprise: zwsx-enterprise
 
 spring:
   cloud:
     gateway:
       routes:
         # 认证中心
-      - id: ${blade.service.blade-user}
-        uri: lb://${blade.service.blade-user}
-        predicates:
-          - Path=/${blade.service.blade-user}/register/**
-      # 认证中心
-      - id: ${blade.service.blade-auth}
-        uri: lb://${blade.service.blade-auth}
-        predicates:
-        - Path=/${blade.service.blade-auth}/**
-        filters:
-        - name: RequestRateLimiter
-          args:
-            # 使用SpEL按名称引用bean
-            key-resolver: '#{@remoteAddrKeyResolver}'
-            # 允许用户每秒处理多少个请求
-            redis-rate-limiter.replenishRate: 10
-            # 允许在一秒钟内完成的最大请求数
-            redis-rate-limiter.burstCapacity: 20
-        - StripPrefix=1
-      # 首页模块
-      - id: ${blade.service.blade-desk}
-        uri: lb://${blade.service.blade-desk}
-        predicates:
-        - Path=/${blade.service.blade-desk}/**
-      # 系统模块
-      - id: ${blade.service.blade-system}
-        uri: lb://${blade.service.blade-system}
-        predicates:
-        - Path=/${blade.service.blade-system}/**
+        - id: ${blade.service.blade-auth}
+          uri: lb://${blade.service.blade-auth}
+          predicates:
+            - Path=/${blade.service.blade-auth}/**
+          filters:
+            - name: RequestRateLimiter
+              args:
+                # 使用SpEL按名称引用bean
+                key-resolver: '#{@remoteAddrKeyResolver}'
+                # 允许用户每秒处理多少个请求
+                redis-rate-limiter.replenishRate: 10
+                # 允许在一秒钟内完成的最大请求数
+                redis-rate-limiter.burstCapacity: 20
+            - StripPrefix=1
+        # 首页模块
+        - id: ${blade.service.blade-desk}
+          uri: lb://${blade.service.blade-desk}
+          predicates:
+            - Path=/${blade.service.blade-desk}/**
+        # 系统模块
+        - id: ${blade.service.blade-system}
+          uri: lb://${blade.service.blade-system}
+          predicates:
+            - Path=/${blade.service.blade-system}/**
+        # 认证中心
+        - id: ${blade.service.blade-user}
+          uri: lb://${blade.service.blade-user}
+          predicates:
+            - Path=/${blade.service.blade-user}/**
+        # 企业模块
+        - id: ${blade.service.zwsx-enterprise}
+          uri: lb://${blade.service.zwsx-enterprise}
+          predicates:
+            - Path=/${blade.service.zwsx-enterprise}/**
+        # 资源模块
+        - id: ${blade.service.blade-resource}
+          uri: lb://${blade.service.blade-resource}
+          predicates:
+            - Path=/${blade.service.blade-resource}/**
       discovery:
         locator:
           enabled: true

@@ -21,6 +21,8 @@ import org.springblade.system.dto.BillDTO;
 import org.springblade.system.entity.Bill;
 import org.springblade.system.vo.BillVO;
 
+import java.time.LocalDate;
+
 /**
  * 通道账单表 服务类
  *
@@ -59,5 +61,7 @@ public interface IBillService extends IService<Bill> {
 	 * 每月生成账单
 	 * @return
 	 */
-	boolean createBills();
+	boolean createBills(LocalDate createBills);
+
+	boolean updateAmount(String vestDate);
 }

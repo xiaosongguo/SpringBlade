@@ -84,6 +84,9 @@ public class ChannelResourceController extends BladeController {
 	@ApiOperation(value = "分页", notes = "传入channelResource", position = 2)
 	public R<IPage<ChannelResourceVO>> list(ChannelResourceVO channelResource, Query query) {
 		supplierId(channelResource);
+		if (this.authFun.hasAnyRole(RoleConstant.OPERATION)) {
+			channelResource.setSupplierId(1);
+		}
 		IPage<ChannelResourceVO> pages = channelResourceService.selectChannelResourcePage(Condition.getPage(query), channelResource);
 		return R.data(pages);
 	}
@@ -97,6 +100,16 @@ public class ChannelResourceController extends BladeController {
 	public R submit(@Valid @RequestBody ChannelResourceVO channelResource) {
 		supplierId(channelResource);
 		return R.status(channelResourceService.saveOrUpdateCustom(channelResource));
+	}
+
+	@PostMapping({"/review"})
+	@ApiOperation(
+		value = "通道审核",
+		notes = "传入channelResource",
+		position = 6
+	)
+	public R review(@Valid @RequestBody ChannelResourceVO channelResource) {
+		return R.status(this.channelResourceService.saveOrUpdateCustom(channelResource));
 	}
 
 

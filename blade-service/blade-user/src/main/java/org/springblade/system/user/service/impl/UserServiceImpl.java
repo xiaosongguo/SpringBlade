@@ -23,6 +23,7 @@ import org.springblade.common.constant.CommonConstant;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.core.tool.utils.DigestUtil;
 import org.springblade.core.tool.utils.Func;
+import org.springblade.system.entity.Enterprise;
 import org.springblade.system.user.entity.User;
 import org.springblade.system.user.entity.UserInfo;
 import org.springblade.system.user.mapper.UserMapper;
@@ -92,6 +93,11 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 	@Override
 	public List<String> getDeptName(String deptIds) {
 		return deptIds != null ? baseMapper.getDeptName(Func.toStrArray(deptIds)):null;
+	}
+
+	@Override
+	public Enterprise getEnterprise(Integer userId) {
+		return ((UserMapper)this.baseMapper).getEnterprise(userId);
 	}
 
 }

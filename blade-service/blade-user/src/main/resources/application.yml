@@ -1,0 +1,30 @@
+spring:
+  redis:
+    database: 10
+  mail:
+    host: smtp.mxhichina.com  #阿里云发送服务器地址
+    username: service@zhongwsx.com  #发送人地址
+    password: Zwsx123456
+    default-encoding: utf-8
+    port: 25
+
+
+
+feign:
+  httpclient:
+    enabled: true
+
+
+zwsx:
+  sms:
+    apName: v3gaol
+    apPassword: v3gaol
+    url: http://192.168.3.231:18081/wgws/BatchSubmit
+
+
+blade:
+  secure:
+    url:
+      exclude-patterns:
+        - /user/*
+        - /dict/*

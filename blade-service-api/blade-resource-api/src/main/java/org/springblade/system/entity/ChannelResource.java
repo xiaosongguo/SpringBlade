@@ -23,10 +23,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.springblade.system.enums.BusiTypeEnum;
-import org.springblade.system.enums.OperatorTypeEnum;
-import org.springblade.system.enums.ProtocolTypeEnum;
-import org.springblade.system.enums.SrcTypeEnum;
+import org.springblade.system.enums.*;
 
 import javax.validation.constraints.Digits;
 import java.io.Serializable;
@@ -142,8 +139,7 @@ public class ChannelResource implements Serializable {
 	 */
 	@ApiModelProperty(value = "资源类型")
 	@TableField("RESOURCE_TYPE")
-	private Integer resourceType;
-	/**
+	private ResourceTypeEnum resourceType;	/**
 	 * 业务类型
 	 */
 	@ApiModelProperty(value = "业务类型")
@@ -166,7 +162,7 @@ public class ChannelResource implements Serializable {
 	 */
 	@ApiModelProperty(value = "投诉率")
 	@TableField("COMPLAINT_RATE")
-	private Integer complaintRate;
+	private Double complaintRate;
 	/**
 	 * 服务类型
 	 */
@@ -228,6 +224,19 @@ public class ChannelResource implements Serializable {
 	@TableField("SGIP_NODE_ID")
 	@Digits(integer = 19, fraction = 0)
 	private Long sgipNodeId;
+
+
+	@ApiModelProperty("投诉个数")
+		@TableField("COMPLAINT_NUM")
+		private Integer complaintNum;
+
+		@ApiModelProperty("2-代理4-直客8-VIP")
+			@TableField("USER_LEVEL")
+			private Integer userLevel;
+
+			@ApiModelProperty("")
+				@TableField("BIZ_TYPES")
+				private String bizTypes;
 
 
 }

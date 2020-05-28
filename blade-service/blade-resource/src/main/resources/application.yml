@@ -1,0 +1,13 @@
+#数据源配置
+spring:
+  redis:
+    database: 5
+
+mybatis-plus:
+  type-enums-package: org.springblade.system.enums
+  global-config:
+    sql-parser-cache: true
+  configuration:
+    default-enum-type-handler: com.baomidou.mybatisplus.extension.handlers.EnumTypeHandler
+
+

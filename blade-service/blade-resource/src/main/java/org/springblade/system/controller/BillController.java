@@ -16,9 +16,7 @@
 package org.springblade.system.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.springblade.core.boot.ctrl.BladeController;
 import org.springblade.core.mp.support.Condition;
@@ -34,14 +32,10 @@ import org.springblade.system.feign.IDictClient;
 import org.springblade.system.service.IBillService;
 import org.springblade.system.vo.BillVO;
 import org.springblade.system.wrapper.BillWrapper;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -150,7 +144,7 @@ public class BillController extends BladeController {
 		return R.status(billService.saveOrUpdateBatch(collect));
 	}
 
-	
+
 	/**
 	* 删除 通道账单表
 	*/
@@ -167,5 +161,37 @@ public class BillController extends BladeController {
 	@ApiOperation(value = "导入", notes = "传入bills", position = 5)
 	public R update(@Valid @RequestBody List<Bill> bills) {
 		return R.status(billService.saveBatch(bills));
+	}
+
+	@PostMapping({"/createBills"})
+	@ApiImplicitParams({@ApiImplicitParam(
+		name = "vestDate",
+		value = "账期",
+		paramType = "query",
+		dataType = "string"
+	)})
+	@ApiOperation(
+		value = "创建账单",
+		notes = "传入vestDate",
+		position = 5
+	)
+	public R createBills(String vestDate) {
+		return R.status(this.billService.createBills(LocalDate.parse(vestDate)));
+	}
+
+	@PostMapping({"/updateAmount"})
+	@ApiImplicitParams({@ApiImplicitParam(
+		name = "vestDate",
+		value = "账期",
+		paramType = "query",
+		dataType = "string"
+	)})
+	@ApiOperation(
+		value = "更新账单",
+		notes = "传入vestDate",
+		position = 5
+	)
+	public R updateAmount(String vestDate) {
+		return R.status(this.billService.updateAmount(vestDate));
 	}
 }

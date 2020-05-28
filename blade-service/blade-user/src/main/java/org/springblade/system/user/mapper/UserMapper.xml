@@ -88,4 +88,10 @@
         and is_deleted = 0
     </select>
 
+    <select id="getEnterprise" resultType="org.springblade.system.entity.Enterprise">
+        SELECT NAME,
+               status
+          from ext_enterprise
+         WHERE user_id = #{userId}
+    </select>
 </mapper>

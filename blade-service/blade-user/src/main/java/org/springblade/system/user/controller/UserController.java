@@ -26,14 +26,15 @@ import lombok.AllArgsConstructor;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.secure.BladeUser;
+import org.springblade.core.secure.auth.AuthFun;
 import org.springblade.core.tool.api.R;
-import org.springblade.core.tool.constant.BladeConstant;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.system.feign.IDictClient;
 import org.springblade.system.user.entity.User;
 import org.springblade.system.user.service.IUserService;
 import org.springblade.system.user.vo.UserVO;
 import org.springblade.system.user.wrapper.UserWrapper;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -53,6 +54,10 @@ public class UserController {
 	private IUserService userService;
 
 	private IDictClient dictClient;
+
+	private RedisTemplate redisTemplate;
+
+	private AuthFun authFun;
 
 	/**
 	 * 查询单条
@@ -76,8 +81,12 @@ public class UserController {
 	@ApiOperation(value = "列表", notes = "传入account和realName", position = 2)
 	public R<IPage<UserVO>> list(@ApiIgnore @RequestParam Map<String, Object> user, Query query, BladeUser bladeUser) {
 		QueryWrapper<User> queryWrapper = Condition.getQueryWrapper(user, User.class);
-		IPage<User> pages = userService.page(Condition.getPage(query), (!bladeUser.getTenantCode().equals(BladeConstant.ADMIN_TENANT_CODE)) ? queryWrapper.lambda().eq(User::getTenantCode, bladeUser.getTenantCode()) : queryWrapper);
-		UserWrapper userWrapper = new UserWrapper(userService, dictClient);
+		Integer userId = bladeUser.getUserId();
+		if (!this.authFun.isSupplier() && !this.authFun.hasAnyRole(new String[] { "tourist" }))
+			userId = Integer.valueOf(1);
+		queryWrapper.last("start with id = " + userId + " connect by  prior id = create_user");
+		IPage<User> pages = this.userService.page(Condition.getPage(query), queryWrapper);
+		UserWrapper userWrapper = new UserWrapper(this.userService, this.dictClient);
 		return R.data(userWrapper.pageVO(pages));
 	}
 
@@ -96,7 +105,10 @@ public class UserController {
 	@PostMapping("/update")
 	@ApiOperation(value = "修改", notes = "传入User", position = 3)
 	public R update(@Valid @RequestBody User user) {
-		return R.status(userService.updateById(user));
+		boolean update = this.userService.updateById(user);
+		if (update)
+			redisTemplate.opsForHash().put(user.getTenantCode(), user.getAccount(), Boolean.FALSE);
+		return R.status(update);
 	}
 
 	/**

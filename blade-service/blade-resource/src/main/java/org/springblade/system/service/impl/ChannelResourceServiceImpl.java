@@ -19,27 +19,21 @@ import com.alibaba.nacos.client.naming.utils.CollectionUtils;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.google.common.base.Splitter;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springblade.core.secure.utils.SecureUtil;
 import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.Func;
-import org.springblade.system.entity.ChannelRegular;
-import org.springblade.system.entity.ChannelResource;
-import org.springblade.system.entity.Ismg;
-import org.springblade.system.entity.RouteIsmg;
-import org.springblade.system.entity.ServiceUnit;
-import org.springblade.system.entity.SignIsmg;
+import org.springblade.system.entity.*;
 import org.springblade.system.enums.OperatorTypeEnum;
+import org.springblade.system.enums.ResourceTypeEnum;
+import org.springblade.system.feign.IContactClient;
 import org.springblade.system.feign.IDictClient;
 import org.springblade.system.http.CommandRmiClient;
 import org.springblade.system.mapper.ChannelResourceMapper;
-import org.springblade.system.service.IChannelRegularService;
-import org.springblade.system.service.IChannelResourceService;
-import org.springblade.system.service.IIsmgService;
-import org.springblade.system.service.IRouteIsmgService;
-import org.springblade.system.service.IServiceUnitService;
-import org.springblade.system.service.ISignIsmgService;
+import org.springblade.system.service.*;
 import org.springblade.system.strategy.IsmgConfig;
 import org.springblade.system.strategy.IsmgNameContext;
 import org.springblade.system.vo.ChannelResourceVO;
@@ -83,6 +77,8 @@ public class ChannelResourceServiceImpl extends ServiceImpl<ChannelResourceMappe
 
 	private IServiceUnitService serviceUnitService;
 
+	private IContactClient contactClient;
+
 
 	@Override
 	public IPage<ChannelResourceVO> selectChannelResourcePage(IPage<ChannelResourceVO> page, ChannelResourceVO channelResource) {
@@ -113,7 +109,6 @@ public class ChannelResourceServiceImpl extends ServiceImpl<ChannelResourceMappe
 				commandRmiClient.connecTion("CM_ISMG","CM_SIGN_ISMG");
 			}
 		}
-		channelResource.setStatus(0);
 		return super.saveOrUpdate(channelResource);
 	}
 
@@ -186,7 +181,7 @@ public class ChannelResourceServiceImpl extends ServiceImpl<ChannelResourceMappe
 	/**
 	 * 生成网关签名表数据
 	 * @param channelResource
-	 * 
+	 *
 	 * @return
 	 */
 	private List<SignIsmg> getSignIsmgs(Ismg ismg,ChannelResource channelResource) {
@@ -202,9 +197,11 @@ public class ChannelResourceServiceImpl extends ServiceImpl<ChannelResourceMappe
 			signIsmg.setSignName("*");
 			signIsmgs.add(signIsmg);
 		}else{
+			int i = 1;
 			Arrays.stream(channelResource.getSignature().split(",|，")).forEach(sign->{
 					SignIsmg fixedSignIsmg = BeanUtil.copy(signIsmg, SignIsmg.class);
 					fixedSignIsmg.setSignName(sign.trim());
+					fixedSignIsmg.setSrcId(ismg.getPhone() + StringUtils.leftPad(Func.toStr(i), 3, '0'));
 					signIsmgs.add(fixedSignIsmg);
 				}
 			);
@@ -213,6 +210,8 @@ public class ChannelResourceServiceImpl extends ServiceImpl<ChannelResourceMappe
 	}
 
 	private ChannelRegular getChannelRegular(Ismg ismg,ChannelResource channelResource) {
+		Contact contact = contactClient.one(SecureUtil.getUserId());
+
 		ChannelRegular channelRegular = new ChannelRegular();
 
 		channelRegular.setChannelName(ismg.getIsmgName());
@@ -222,10 +221,10 @@ public class ChannelResourceServiceImpl extends ServiceImpl<ChannelResourceMappe
 		channelRegular.setChannelLocalOperator(channelLocalOperator);
 		channelRegular.setChannelSupportOperator(channelLocalOperator);
 		channelRegular.setChannelSmsMainNumber(Func.toStr(channelResource.getAccessNumber()));
-//		channelRegular.setChannelApplyCompany("缺省");
+		channelRegular.setChannelApplyCompany("中网数信科技有限公司");
 		channelRegular.setChannelCharacter("三方通道");
 		channelRegular.setChannelUsers("中网信");
-//		channelRegular.setChannelSpid();
+		channelRegular.setChannelSpid(Func.toInt(channelResource.getEnterpriseNumber()));
 		channelRegular.setChannelStatus("已接入");
 //		channelRegular.setChannelDisReason("");
 		channelRegular.setTimeToInit(LocalDateTime.now());
@@ -233,11 +232,11 @@ public class ChannelResourceServiceImpl extends ServiceImpl<ChannelResourceMappe
 //		channelRegular.setTimeToWork("");
 //		channelRegular.setTimeToDisable();
 		channelRegular.setContactOfAccess("周外平");
-//		channelRegular.setContactOfOperator();
+		channelRegular.setContactOfOperator(contact.getName());
 //		channelRegular.setContactMobile();
-//		channelRegular.setContactEmail();
+		channelRegular.setContactEmail(contact.getEmail());
 //		channelRegular.setContactQq();
-//		channelRegular.setContactWechat();
+		channelRegular.setContactWechat(Func.toStr(contact.getMobile()));
 		channelRegular.setInterProtocol(channelResource.getProtocolType().getDescp());
 		channelRegular.setInterIp(channelResource.getConnectIp());
 		channelRegular.setInterPort(Func.toStr(channelResource.getPort()));
@@ -249,21 +248,36 @@ public class ChannelResourceServiceImpl extends ServiceImpl<ChannelResourceMappe
 		channelRegular.setBillDescription("无");
 //		channelRegular.setBillBalance();
 //		channelRegular.setBillTime();
-//		channelRegular.setComplainNumberPerMi();
-//		channelRegular.setComplainNumber();
+		channelRegular.setComplainNumberPerMi(channelResource.getComplaintRate());
+		channelRegular.setComplainNumber(channelResource.getComplaintNum());
 		channelRegular.setLmsSupport("支持");
 //		channelRegular.setLmsHeadSize();
 		channelRegular.setLmsSignType("最后一条");
 		channelRegular.setReceIsSupport("支持");
 		channelRegular.setReceReportSupport("支持");
-		channelRegular.setSignType("网关签名");
-		channelRegular.setSignReplace("抹去");
-		channelRegular.setSignSize("8");
-		channelRegular.setSignWhether("报备签名");
-//		channelRegular.setCodeSize();
-		channelRegular.setCodeChildType("限制性");
+		Integer signType = channelResource.getSignType();
+		if (signType == 1) {
+			channelRegular.setSignType("平台签名");
+			channelRegular.setSignSize("8");
+			channelRegular.setSignWhether("否");
+		} else {
+			channelRegular.setSignType("网关签名");
+			channelRegular.setSignSize(Func.toStr(Splitter.onPattern(",|，").omitEmptyStrings().splitToList(channelResource.getSignature()).stream().mapToInt(String::length).max().getAsInt()));
+			channelRegular.setSignWhether("报备签名");
+		}
+		channelRegular.setSignReplace("保留签名");
+		int codeLen = Func.toInt(channelResource.getCodeLen(), 0);
+//		channelRegular.setSignWhether("报备签名");
+		channelRegular.setCodeSize(Func.toStr(codeLen));
+		if (codeLen == 12) {
+			channelRegular.setCodeChildType("完全支持");
+		} else if (codeLen == 0) {
+			channelRegular.setCodeChildType("不支持");
+		} else {
+			channelRegular.setCodeChildType("限制性");
+		}
 
-		channelRegular.setLimitArriveProv("全国");
+		channelRegular.setLimitArriveProv(channelResource.getProvinceName());
 //		channelRegular.setLimitShieldLocation();
 		channelRegular.setLimitEnableTime("启用");
 //		channelRegular.setLimitSendTime();
@@ -273,11 +287,18 @@ public class ChannelResourceServiceImpl extends ServiceImpl<ChannelResourceMappe
 //		channelRegular.setLimitMonthlyNum();
 //		channelRegular.setLimitSendFrequency();
 //		channelRegular.setLimitContentLength();
-		channelRegular.setLimitSendProfession("是");
-		channelRegular.setLimitSendVerify("是");
-		channelRegular.setLimitSendMarketing("否");
+		ResourceTypeEnum resourceType = channelResource.getResourceType();
+		if (resourceType == ResourceTypeEnum.app) {
+			channelRegular.setLimitSendProfession("是");
+			channelRegular.setLimitSendVerify("是");
+			channelRegular.setLimitSendMarketing("否");
+		} else {
+			channelRegular.setLimitSendProfession("否");
+			channelRegular.setLimitSendVerify("否");
+			channelRegular.setLimitSendMarketing("是");
+		}
 		channelRegular.setLimitPersonalAudit("否");
-		channelRegular.setLimitKeyword("否");
+//		channelRegular.setLimitKeyword("否");
 //		channelRegular.setLimitMassNumber();
 		channelRegular.setLimitBlack("否");
 //		channelRegular.setRemark();
@@ -286,7 +307,7 @@ public class ChannelResourceServiceImpl extends ServiceImpl<ChannelResourceMappe
 //		channelRegular.setBillCmPrice();
 		channelRegular.setIsmgId(ismg.getIsmgId());
 //		channelRegular.setInterFilename();
-		channelRegular.setChannelOperatorName("福州中网信通信科技有限公司");
+		channelRegular.setChannelOperatorName(SecureUtil.getUserName());
 //		channelRegular.setOperatorBalance();
 		return channelRegular;
 	}

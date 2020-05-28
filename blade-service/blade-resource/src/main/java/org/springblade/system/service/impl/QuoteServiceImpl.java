@@ -22,21 +22,18 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springblade.core.secure.utils.SecureUtil;
 import org.springblade.core.tool.utils.BeanUtil;
+import org.springblade.core.tool.utils.CollectionUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.system.dto.QuoteDTO;
-import org.springblade.system.entity.ChannelRegular;
-import org.springblade.system.entity.Quote;
-import org.springblade.system.entity.QuoteDetail;
-import org.springblade.system.entity.RouteIsmg;
+import org.springblade.system.entity.*;
 import org.springblade.system.enums.OperatorTypeEnum;
 import org.springblade.system.feign.IDictClient;
+import org.springblade.system.feign.IFileManagerClient;
 import org.springblade.system.http.CommandRmiClient;
 import org.springblade.system.mapper.ChannelResourceMapper;
 import org.springblade.system.mapper.QuoteMapper;
-import org.springblade.system.service.IChannelRegularService;
-import org.springblade.system.service.IQuoteDetailService;
-import org.springblade.system.service.IQuoteService;
-import org.springblade.system.service.IRouteIsmgService;
+import org.springblade.system.service.*;
+import org.springblade.system.strategy.route.RouteIsmgContext;
 import org.springblade.system.vo.ChannelResourceVO;
 import org.springblade.system.vo.QuoteVO;
 import org.springframework.stereotype.Service;
@@ -46,6 +43,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *  服务实现类
@@ -70,6 +68,10 @@ public class QuoteServiceImpl extends ServiceImpl<QuoteMapper, Quote> implements
 
 	private IChannelRegularService channelRegularService;
 
+	private IIsmgAbilityService ismgAbilityService;
+	private IFileManagerClient fileManagerClient;
+	private RouteIsmgContext routeIsmgContext;
+
 
 	@Override
 	public IPage<QuoteVO> selectQuotePage(IPage<QuoteVO> page, QuoteVO quote) {
@@ -85,6 +87,16 @@ public class QuoteServiceImpl extends ServiceImpl<QuoteMapper, Quote> implements
 			return isSucc;
 		}
 		quoteDetails.forEach(quoteDetail->quoteDetail.setQuiteId(quoteVO.getId()));
+		List<FileManager> fileManagers = (List)quoteVO.getFileIds().stream().map((id) -> {
+			FileManager fileManager = new FileManager();
+			fileManager.setId(id);
+			fileManager.setOwnerId(Func.toInt(quoteVO.getId()));
+			return fileManager;
+		}).collect(Collectors.toList());
+		if (CollectionUtil.isNotEmpty(fileManagers)) {
+			Collection<FileManager> fileManagerCollection = this.fileManagerClient.updateBatchById(fileManagers);
+			log.debug("origin:{},later:{}", fileManagers, fileManagerCollection);
+		}
 		isSucc = quoteDetailService.saveBatch(quoteVO.getQuoteDetails());
 		return isSucc;
 	}
@@ -98,11 +110,14 @@ public class QuoteServiceImpl extends ServiceImpl<QuoteMapper, Quote> implements
 			//选出报价的通道
 			List<ChannelResourceVO> channelResources = channelResourceMapper.selectChannels(quoteDTO.getId());
 
+			List<IsmgAbility> ismgAbilities = new ArrayList(channelResources.size());
+
 			//更新通道管理报价
 			List<ChannelRegular> channelRegulars = new ArrayList<>(channelResources.size());
 			channelResources.forEach(channelResource ->{
 				ChannelRegular channelRegular = new ChannelRegular();
-				channelRegular.setIsmgId(channelResource.getIsmgId());
+				Integer ismgId = channelResource.getIsmgId();
+				channelRegular.setIsmgId(ismgId);
 				Double unitPrice = channelResource.getUnitPrice();
 				OperatorTypeEnum operatorType = channelResource.getSupplierType();
 				if (operatorType == OperatorTypeEnum.YDLTDX){
@@ -115,12 +130,21 @@ public class QuoteServiceImpl extends ServiceImpl<QuoteMapper, Quote> implements
 					channelRegular.setBillCtPrice(unitPrice);
 				}
 				channelRegulars.add(channelRegular);
+				IsmgAbility ismgAbility = new IsmgAbility();
+				ismgAbility.setIsmgId(ismgId);
+				ismgAbility.setUserLevel(channelResource.getUserLevel());
+				ismgAbility.setBizTypes(channelResource.getBizTypes());
+				ismgAbilities.add(ismgAbility);
 			});
 			channelRegularService.updateBatchByIsmgId(channelRegulars);
 			//插路由详情
 			List<RouteIsmg> routeIsmgs = getSignIsmgs(channelResources);
 			if (routeIsmgService.saveBatch(routeIsmgs)){
 				commandRmiClient.connecTion(new String[]{"CM_ROUTE_ISMG"});
+			}
+			log.info(ismgAbilities.toString());
+			if (this.ismgAbilityService.saveBatch(ismgAbilities)) {
+				this.commandRmiClient.connecTion(new String[]{"CM_ISMG_ABILITY"});
 			}
 
 		}

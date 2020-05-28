@@ -18,6 +18,7 @@ package org.springblade.system.vo;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springblade.system.entity.FileManager;
 import org.springblade.system.entity.Quote;
 import org.springblade.system.entity.QuoteDetail;
 
@@ -42,4 +43,6 @@ public class QuoteVO extends Quote {
 	private Long ismgId;
 
 	private String tenantCode;
+
+	private List<FileManager> fileManagers;
 }

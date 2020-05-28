@@ -18,6 +18,7 @@ package org.springblade.system.user.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.core.mp.base.BaseService;
+import org.springblade.system.entity.Enterprise;
 import org.springblade.system.user.entity.User;
 import org.springblade.system.user.entity.UserInfo;
 
@@ -88,4 +89,6 @@ public interface IUserService extends BaseService<User> {
 	 * @return
 	 */
 	List<String> getDeptName(String deptIds);
+
+	Enterprise getEnterprise(Integer paramInteger);
 }

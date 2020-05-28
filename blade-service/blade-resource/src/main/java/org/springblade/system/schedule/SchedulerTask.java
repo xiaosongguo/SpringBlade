@@ -5,6 +5,9 @@ import org.springblade.system.service.IBillService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 /**
  * - 第一位，表示秒，取值 0-59；
  * - 第二位，表示分，取值 0-59；
@@ -28,7 +31,14 @@ public class SchedulerTask {
 
 	@Scheduled(cron = "0 0 0 4 * ?")
 	private void createBills() {
-		billService.createBills();
+		billService.createBills(LocalDate.now());
+	}
+
+	@Scheduled(
+		cron = "0 1 0 4 * ?"
+	)
+	private void updateAmount() {
+		this.billService.updateAmount(LocalDate.now().format(DateTimeFormatter.ISO_DATE));
 	}
 
 }

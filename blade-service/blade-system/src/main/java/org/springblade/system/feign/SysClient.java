@@ -78,7 +78,7 @@ public class SysClient implements ISysClient {
 	}
 
 	@Override
-	@GetMapping(API_PREFIX + "/getRoleIds")
+	@PostMapping(API_PREFIX + "/getRoleIds")
 	public String getRoleIds(Role role) {
 		List<Integer> roleIds = roleService.lambdaQuery()
 			.eq(Role::getTenantCode, role.getTenantCode())
@@ -93,5 +93,11 @@ public class SysClient implements ISysClient {
 	@PostMapping(API_PREFIX + "/saveSupplierTenant")
 	public Tenant saveSupplierTenant(Tenant tenant) {
 		return tenantService.saveSupplierTenant(tenant);
+	}
+
+	@Override
+	public Dept saveDept(Dept dept) {
+		deptService.save(dept);
+		return dept;
 	}
 }

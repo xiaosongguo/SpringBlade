@@ -16,6 +16,7 @@
 package org.springblade.system.feign;
 
 import org.springblade.core.tool.api.R;
+import org.springblade.system.entity.Certificate;
 import org.springblade.system.entity.Dict;
 import org.springframework.stereotype.Component;
 
@@ -37,4 +38,12 @@ public class IDictClientFallback implements IDictClient {
 	public R<List<Dict>> getList(String code) {
 		return R.fail("获取数据失败");
 	}
+
+	@Override
+	public R<String> getCertificateValue(Integer paramInteger) {
+		return R.fail("获取数据失败");
+	}
+
+	@Override
+	public R<List<Certificate>> getCertificateList() { return  R.fail("获取数据失败"); }
 }

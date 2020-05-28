@@ -17,6 +17,7 @@ package org.springblade.system.user.config;
 
 
 import org.springblade.core.secure.registry.SecureRegistry;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -27,6 +28,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * @author Chill
  */
 @Configuration
+@EnableConfigurationProperties({ZwsxSmsProperties.class})
 public class RegistryConfiguration implements WebMvcConfigurer {
 
 	@Bean
@@ -34,6 +36,7 @@ public class RegistryConfiguration implements WebMvcConfigurer {
 		SecureRegistry secureRegistry = new SecureRegistry();
 		secureRegistry.excludePathPatterns("/token/**");
 		secureRegistry.excludePathPatterns("/register/**");
+		secureRegistry.setEnable(false);
 		return secureRegistry;
 	}
 

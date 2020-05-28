@@ -30,4 +30,7 @@ import lombok.EqualsAndHashCode;
 public class BillDTO extends Bill {
 	private static final long serialVersionUID = 1L;
 
+	private String beginDate;
+
+	private String endDate;
 }

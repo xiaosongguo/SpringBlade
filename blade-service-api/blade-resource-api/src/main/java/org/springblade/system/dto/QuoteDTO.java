@@ -40,4 +40,6 @@ public class QuoteDTO extends Quote {
 
 	private List<Ismg> ismgs;
 
+	private List<Integer> fileIds;
+
 }

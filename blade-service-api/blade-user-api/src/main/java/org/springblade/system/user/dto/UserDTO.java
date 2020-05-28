@@ -33,4 +33,6 @@ public class UserDTO extends User {
 
 	private String smsCode;
 
+	private String mailCode;
+
 }

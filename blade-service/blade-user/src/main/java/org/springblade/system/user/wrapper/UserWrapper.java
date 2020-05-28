@@ -24,6 +24,7 @@ import org.springblade.system.feign.IDictClient;
 import org.springblade.system.user.entity.User;
 import org.springblade.system.user.service.IUserService;
 import org.springblade.system.user.vo.UserVO;
+import org.springblade.system.entity.Enterprise;
 
 import java.util.List;
 
@@ -49,6 +50,8 @@ public class UserWrapper extends BaseEntityWrapper<User, UserVO> {
 		List<String> deptName = userService.getDeptName(user.getDeptId());
 		userVO.setRoleName(Func.join(roleName));
 		userVO.setDeptName(Func.join(deptName));
+		Enterprise enterprise = this.userService.getEnterprise(user.getId());
+		userVO.setEnterprise(enterprise);
 		R<String> dict = dictClient.getValue("sex", Func.toInt(user.getSex()));
 		if (dict.isSuccess()) {
 			userVO.setSexName(dict.getData());

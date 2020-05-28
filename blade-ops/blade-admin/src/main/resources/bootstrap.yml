@@ -15,3 +15,6 @@ spring:
     admin:
       discovery:
         ignored-services: consul
+
+logging:
+  config: classpath:log/logback_${blade.env}.xml

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.system.mapper.RouteRuleMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="routeRuleResultMap" type="org.springblade.system.entity.RouteRule">
+        <id column="ROUTE_RULE_ID" property="routeRuleId"/>
+        <result column="PRIORITY" property="priority"/>
+        <result column="USER_ID" property="userId"/>
+        <result column="SIGN_NAME" property="signName"/>
+        <result column="MSISDN_TYPE" property="msisdnType"/>
+        <result column="OPERATOR" property="operator"/>
+        <result column="BIZ_TYPE" property="bizType"/>
+        <result column="MSG_CONTENT" property="msgContent"/>
+        <result column="EXPRESSION" property="expression"/>
+        <result column="ROUTE_ID" property="routeId"/>
+        <result column="ISMG_ID" property="ismgId"/>
+        <result column="AS_USER_ID" property="asUserId"/>
+        <result column="LOCATION_ID" property="locationId"/>
+        <result column="EXTRA_RULE" property="extraRule"/>
+        <result column="ROUTE_TYPE" property="routeType"/>
+    </resultMap>
+
+
+</mapper>

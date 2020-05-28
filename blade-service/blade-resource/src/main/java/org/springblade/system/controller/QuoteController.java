@@ -32,16 +32,12 @@ import org.springblade.core.tool.utils.Func;
 import org.springblade.system.dto.QuoteDTO;
 import org.springblade.system.entity.Quote;
 import org.springblade.system.feign.IDictClient;
+import org.springblade.system.feign.IFileManagerClient;
 import org.springblade.system.service.IQuoteDetailService;
 import org.springblade.system.service.IQuoteService;
 import org.springblade.system.vo.QuoteVO;
 import org.springblade.system.wrapper.QuoteWrapper;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Objects;
@@ -64,6 +60,8 @@ public class QuoteController extends BladeController {
 
 	private IQuoteDetailService quoteDetailService;
 
+	private IFileManagerClient fileManagerClient;
+
 	private AuthFun authFun;
 
 	private void authFun(Quote quote) {
@@ -79,24 +77,24 @@ public class QuoteController extends BladeController {
 	@ApiOperation(value = "详情", notes = "传入quote", position = 1)
 	public R<QuoteVO> detail(Quote quote) {
 		Quote detail = quoteService.getOne(Condition.getQueryWrapper(quote));
-		QuoteWrapper quoteWrapper = new QuoteWrapper(dictClient,quoteDetailService);
+		QuoteWrapper quoteWrapper = new QuoteWrapper(dictClient,quoteDetailService,fileManagerClient);
 		return R.data(quoteWrapper.entityVO(detail));
 	}
 
 	/**
-	* 分页 
+	* 分页
 	*/
 	@GetMapping("/list")
 	@ApiOperation(value = "分页", notes = "传入quote", position = 2)
 	public R<IPage<QuoteVO>> list(Quote quote, Query query) {
 		authFun(quote);
 		IPage<Quote> pages = quoteService.page(Condition.getPage(query), Condition.getQueryWrapper(quote));
-		QuoteWrapper quoteWrapper = new QuoteWrapper(dictClient,quoteDetailService);
+		QuoteWrapper quoteWrapper = new QuoteWrapper(dictClient,quoteDetailService,fileManagerClient);
 		return R.data(quoteWrapper.pageVO(pages));
 	}
 
 	/**
-	* 自定义分页 
+	* 自定义分页
 	*/
 	@GetMapping("/page")
 	@ApiOperation(value = "分页", notes = "传入quote", position = 3)
@@ -109,7 +107,7 @@ public class QuoteController extends BladeController {
 	}
 
 	/**
-	* 新增 
+	* 新增
 	*/
 	@PostMapping("/save")
 	@ApiOperation(value = "新增", notes = "传入quote与quoteDetail", position = 4)
@@ -118,7 +116,7 @@ public class QuoteController extends BladeController {
 	}
 
 	/**
-	* 修改 
+	* 修改
 	*/
 	@PostMapping("/update")
 	@ApiOperation(value = "修改", notes = "传入quote", position = 5)
@@ -132,7 +130,7 @@ public class QuoteController extends BladeController {
 	}
 
 	/**
-	* 新增或修改 
+	* 新增或修改
 	*/
 	@PostMapping("/submit")
 	@ApiOperation(value = "新增或修改", notes = "传入quote", position = 6)
@@ -141,9 +139,9 @@ public class QuoteController extends BladeController {
 		return R.status(quoteService.saveOrUpdate(quote));
 	}
 
-	
+
 	/**
-	* 删除 
+	* 删除
 	*/
 	@PostMapping("/remove")
 	@ApiOperation(value = "删除", notes = "传入ids", position = 7)

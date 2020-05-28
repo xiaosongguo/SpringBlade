@@ -18,6 +18,7 @@ package org.springblade.system.feign;
 
 import org.springblade.core.launch.constant.AppConstant;
 import org.springblade.core.tool.api.R;
+import org.springblade.system.entity.Certificate;
 import org.springblade.system.entity.Dict;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,5 +57,12 @@ public interface IDictClient {
 	 */
 	@GetMapping(API_PREFIX + "/getList")
 	R<List<Dict>> getList(@RequestParam("code") String code);
+
+
+	@GetMapping({"/dict/certificate/getValue"})
+	R<String> getCertificateValue(@RequestParam("tpye") Integer paramInteger);
+
+	@GetMapping({"/dict/certificate/getList"})
+	R<List<Certificate>> getCertificateList();
 
 }

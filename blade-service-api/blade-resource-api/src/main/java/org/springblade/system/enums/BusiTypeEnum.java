@@ -9,20 +9,22 @@ import lombok.Getter;
  */
 @Getter
 public enum BusiTypeEnum implements IEnum<Integer> {
-	placeholder(0,"占位"),
-	SMS(1, "短信"),
-	MMS(2, "彩信"),
-	VOICE(3, "语音"),
+	placeholder(0,"占位","placeholder"),
+	SMS(1, "短信","dx"),
+	MMS(2, "彩信", "cx"),
+	VOICE(3, "语音", "yy"),
 	;
-	private BusiTypeEnum(int code, String descp) {
+	private BusiTypeEnum(int code, String descp, String name) {
         this.code = code;
         this.descp = descp;
+		this.name = name;
     }
 
 	@JsonValue
 	@EnumValue
 	private final int code;
 	private final String descp;
+	private final String name;
 
 	@Override
 	public Integer getValue() {

@@ -38,4 +38,6 @@ public class ReceiptVO extends Receipt {
 	private String endDate;
 
 	private Integer supplierId;
+
+	private String account;
 }

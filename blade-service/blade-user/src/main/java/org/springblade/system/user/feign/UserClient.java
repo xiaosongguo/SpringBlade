@@ -15,14 +15,17 @@
  */
 package org.springblade.system.user.feign;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import lombok.AllArgsConstructor;
 import org.springblade.core.tool.api.R;
 import org.springblade.system.user.entity.User;
 import org.springblade.system.user.entity.UserInfo;
 import org.springblade.system.user.service.IUserService;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.io.Serializable;
 
 /**
  * 用户服务Feign实现类
@@ -40,10 +43,17 @@ public class UserClient implements IUserClient {
 	public R<UserInfo> userInfo(String tenantCode, String account, String password) {
 		return R.data(service.userInfo(tenantCode, account, password));
 	}
-	@Override
+
+
 	@GetMapping(API_PREFIX + "/getUser")
-	public User getUser(@RequestParam("id") Integer id){
-		return service.getById(id);
+	public User getUser(Wrapper<User> queryWrapper) {
+		return (User)this.service.getOne(queryWrapper, false);
+	}
+
+	@PostMapping({"/user/updateUser"})
+	public User updateUser(User user) {
+		this.service.updateById(user);
+		return (User)this.service.getById((Serializable)user);
 	}
 
 }

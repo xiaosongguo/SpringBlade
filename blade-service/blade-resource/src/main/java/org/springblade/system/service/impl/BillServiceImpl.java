@@ -26,6 +26,7 @@ import org.springblade.system.service.IChannelResourceService;
 import org.springblade.system.vo.BillVO;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -58,7 +59,7 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, Bill> implements IB
 	}
 
 	@Override
-	public boolean createBills() {
+	public boolean createBills(LocalDate now) {
 		return baseMapper.createBills(channelResourceService.selectAvailableChannels().stream().filter(Objects::nonNull).map(channel -> {
 			Bill bill = new Bill();
 			bill.setBillStatus(0);
@@ -69,5 +70,10 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, Bill> implements IB
 			return bill;
 		}).collect(Collectors.toList()));
 	}
+	@Override
+	public boolean updateAmount(String vestDate) {
+		return ((BillMapper)this.baseMapper).updateAmount(vestDate);
+	}
+
 
 }

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.system.mapper.RouteMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="routeResultMap" type="org.springblade.system.entity.Route">
+        <id column="ROUTE_ID" property="routeId"/>
+        <result column="ROUTE_NAME" property="routeName"/>
+    </resultMap>
+
+</mapper>

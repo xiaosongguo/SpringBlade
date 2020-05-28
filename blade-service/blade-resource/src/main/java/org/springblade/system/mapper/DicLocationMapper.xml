@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.system.mapper.DicLocationMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="dicLocationResultMap" type="org.springblade.system.entity.DicLocation">
+        <id column="LOCATION_ID" property="locationId"/>
+        <result column="PROVINCE" property="province"/>
+        <result column="OPERATOR" property="operator"/>
+    </resultMap>
+
+    <select id="getlocationIds" resultType="java.lang.Integer" parameterType="org.springblade.system.entity.DicLocation">
+            SELECT location_id
+              from dic_location
+             WHERE province = #{province}
+               AND regexp_like(operator, #{operator});
+    </select>
+
+
+</mapper>

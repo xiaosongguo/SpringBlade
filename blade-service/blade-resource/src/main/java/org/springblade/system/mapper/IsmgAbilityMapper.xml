@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.system.mapper.IsmgAbilityMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="ismgAbilityResultMap" type="org.springblade.system.entity.IsmgAbility">
+        <result column="ISMG_ID" property="ismgId"/>
+        <result column="USER_LEVEL" property="userLevel"/>
+        <result column="BIZ_TYPES" property="bizTypes"/>
+    </resultMap>
+
+
+    <select id="selectIsmgAbilityPage" resultMap="ismgAbilityResultMap">
+        select * from CM_ISMG_ABILITY where is_deleted = 0
+    </select>
+
+</mapper>

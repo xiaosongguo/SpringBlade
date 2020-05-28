@@ -88,7 +88,7 @@ public interface ISysClient {
 	 * @param role
 	 * @return
 	 */
-	@GetMapping(API_PREFIX + "/getRoleIds")
+	@PostMapping(API_PREFIX + "/getRoleIds")
 	String getRoleIds(@RequestBody  Role role);
 
 	/**
@@ -98,6 +98,9 @@ public interface ISysClient {
 	 */
 	@PostMapping(API_PREFIX + "/saveSupplierTenant")
 	Tenant saveSupplierTenant(@RequestBody Tenant tenant);
+
+	@PostMapping({API_PREFIX +"/saveDept"})
+	Dept saveDept(@RequestBody Dept paramDept);
 
 
 }

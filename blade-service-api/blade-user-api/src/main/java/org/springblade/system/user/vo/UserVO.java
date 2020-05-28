@@ -18,6 +18,7 @@ package org.springblade.system.user.vo;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springblade.system.entity.Enterprise;
 import org.springblade.system.user.entity.User;
 
 /**
@@ -50,4 +51,6 @@ public class UserVO extends User {
 	 * 性别
 	 */
 	private String sexName;
+
+	private Enterprise enterprise;
 }

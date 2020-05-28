@@ -20,9 +20,12 @@ import org.springblade.core.mp.support.BaseEntityWrapper;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.secure.utils.SecureUtil;
 import org.springblade.core.tool.utils.BeanUtil;
+import org.springblade.core.tool.utils.Func;
+import org.springblade.system.entity.FileManager;
 import org.springblade.system.entity.Quote;
 import org.springblade.system.entity.QuoteDetail;
 import org.springblade.system.feign.IDictClient;
+import org.springblade.system.feign.IFileManagerClient;
 import org.springblade.system.service.IQuoteDetailService;
 import org.springblade.system.vo.QuoteVO;
 
@@ -39,6 +42,7 @@ public class QuoteWrapper extends BaseEntityWrapper<Quote, QuoteVO>  {
 
 	private IDictClient dictClient;
 	private IQuoteDetailService quoteDetailService;
+	private IFileManagerClient fileManagerClient;
 
 	@Override
 	public QuoteVO entityVO(Quote quote) {
@@ -53,6 +57,11 @@ public class QuoteWrapper extends BaseEntityWrapper<Quote, QuoteVO>  {
 		quoteDetail.setQuiteId(quoteVO.getId());
 		List<QuoteDetail> quoteDetails = quoteDetailService.list(Condition.getQueryWrapper(quoteDetail));
 		quoteVO.setQuoteDetails(quoteDetails);
+		FileManager fileManager = new FileManager();
+		fileManager.setOwnerId(Func.toInt(quoteVO.getId()));
+		fileManager.setFileType(0);
+		fileManager.setUserId(quote.getSupplierId());
+		quoteVO.setFileManagers(this.fileManagerClient.list(fileManager));
 		return quoteVO;
 	}
 

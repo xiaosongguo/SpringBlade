@@ -19,10 +19,13 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.springblade.core.boot.ctrl.BladeController;
+import org.springblade.core.boot.file.BladeFile;
 import org.springblade.core.secure.utils.SecureUtil;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.constant.SystemConstant;
 import org.springblade.core.tool.utils.StringPool;
+import org.springblade.system.entity.FileManager;
+import org.springblade.system.feign.IFileManagerClient;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -37,8 +40,6 @@ import java.io.IOException;
 import java.net.URLConnection;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  *	文件上传下载
@@ -48,17 +49,27 @@ import java.util.stream.Collectors;
 @Api(value = "", tags = "接口")
 public class FileController extends BladeController {
 
+	private IFileManagerClient fileManagerClient;
+
 	/**
 	 * 上传
 	 */
 	@PostMapping("/upload")
 	@ApiOperation(value = "上传", notes = "", position = 8)
-	public R upload(@RequestParam("file") List<MultipartFile> files) {
+	public R upload(@RequestParam("file") MultipartFile file, @RequestParam(defaultValue = "0") Integer fileType) {
 		String userAccount = SecureUtil.getUserAccount();
-		List<String> succfiles = getFiles(files,userAccount).stream().filter(bladeFile ->
-			bladeFile.transfer(false)
-		).map(bladeFile -> bladeFile.getUploadVirtualPath()).collect(Collectors.toList());
-		return R.data(succfiles);
+		BladeFile bladeFile = this.getFile(file, userAccount);
+		boolean transfer = bladeFile.transfer(false);
+		FileManager fileManager = new FileManager();
+		if (transfer) {
+			fileManager.setName(bladeFile.getOriginalFileName());
+			fileManager.setPath(bladeFile.getUploadVirtualPath());
+			fileManager.setUserId(SecureUtil.getUserId());
+			fileManager.setStatus(0);
+			fileManager.setFileType(fileType);
+		}
+
+		return this.fileManagerClient.upload(fileManager);
 	}
 
 	/**
@@ -102,5 +113,5 @@ public class FileController extends BladeController {
 
 	}
 
-	
+
 }

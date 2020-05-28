@@ -84,5 +84,25 @@
         then insert(id,ismg_id,user_id,bill_month,bill_status) values (seq_user.nextval,c.ismgId,c.userId,c.billMonth,c.billStatus)
     </insert>
 
+    <update id="updateAmount" parameterType="string">
+        merge into ext_bill t
+        using (SELECT TRUNC(t.vest_date, 'mm') vest_date,
+        SUM(t.cmcc_delv + t.cu_delv + t.ct_delv) delv,
+        t.ismg_id,
+        cast(SUM((t.cmcc_delv + t.cu_delv + t.ct_delv) * s.unit_price) AS NUMBER(18, 2)) settle
+        FROM SMSMAN.PM_RECEIPT t
+        INNER JOIN ext_channel_resource c ON c.ismg_id = t.ismg_id
+        INNER JOIN ext_quote_detail s ON s.channel_id = c.id
+        <where>
+            <if test="vestDate != null">
+                and TRUNC(t.vest_date, 'mm') = to_date(#{vestDate}, 'yyyy-mm-dd')
+            </if>
+        </where>
+        GROUP BY TRUNC(t.vest_date, 'mm'),t.ismg_id) c
+        on (t.ismg_id = c.ismg_id and t.bill_month = c.vest_date)
+        when matched then
+        update SET t.sys_amount = c.delv, t.sys_money =  c.settle
+
+    </update>
 
 </mapper>

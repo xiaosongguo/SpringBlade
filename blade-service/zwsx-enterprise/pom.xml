@@ -10,6 +10,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>zwsx-enterprise</artifactId>
+    <name>${project.artifactId}</name>
+    <version>${blade.project.version}</version>
+    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
@@ -57,9 +60,6 @@
                                 <copy overwrite="true"
                                       tofile="${session.executionRootDirectory}/target/${artifactId}/${artifactId}.jar"
                                       file="${project.build.directory}/${artifactId}.jar" />
-                                <copy overwrite="true"
-                                      tofile="${session.executionRootDirectory}/target/${artifactId}/service.sh"
-                                      file="${project.build.outputDirectory}/service.sh" />
                             </tasks>
                         </configuration>
                     </execution>

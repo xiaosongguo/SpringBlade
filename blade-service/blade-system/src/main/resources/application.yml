@@ -1,0 +1,10 @@
+spring:
+  redis:
+    database: 10
+
+blade:
+  secure:
+    url:
+      exclude-patterns:
+        - /sys/*
+        - /dict/*
