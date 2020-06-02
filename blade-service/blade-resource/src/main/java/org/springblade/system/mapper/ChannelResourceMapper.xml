@@ -45,6 +45,10 @@
         LEFT JOIN blade_dept s ON s.id = c.dept_id
         <where>
             and c.is_deleted = 0
+            <if test="channelResource.supplierId != null">
+                and t.supplier_id in (select c.id from blade_user c start
+                with c.id = #{channelResource.supplierId} connect by prior c.id = c.create_user)
+            </if>
             <if test="channelResource.tenantCode != null">
                 and c.tenant_code = #{channelResource.tenantCode}
             </if>
