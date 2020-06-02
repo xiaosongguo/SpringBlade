@@ -41,5 +41,6 @@ public interface IsmgMapper extends BaseMapper<Ismg> {
 	List<IsmgVO> selectIsmgPage(IPage page, IsmgVO ismg);
 
 	List<Ismg> dic(List<ChannelResource> channelResources);
+	List<Ismg> dic2();
 
 }

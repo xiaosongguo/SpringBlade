@@ -118,7 +118,7 @@ public class IsmgController extends BladeController {
 		return R.status(ismgService.saveOrUpdate(ismg));
 	}
 
-	
+
 	/**
 	* 删除 网关表
 	*/
@@ -139,5 +139,16 @@ public class IsmgController extends BladeController {
 		return R.data(ismgService.dic(channelResources));
 	}
 
-	
+	/**
+	 * 不分页 网关id与名称
+	 */
+	@GetMapping("/dic2")
+	@ApiOperation(value = "网关id与名称（不过滤）", notes = "")
+	public R dic2() {
+		return R.data(ismgService.dic2());
+	}
+
+
+
+
 }

@@ -56,7 +56,11 @@
 
 
     <select id="selectIsmgPage" resultMap="ismgResultMap">
-        select * from CM_ISMG where is_deleted = 0
+        select * from CM_ISMG <!--where is_deleted = 0 -->
+    </select>
+
+    <select id="dic2" resultMap="dictResultMap">
+        select ismg_name,ismg_id from CM_ISMG
     </select>
 
 </mapper>

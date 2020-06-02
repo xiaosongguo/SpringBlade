@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.system.mapper.ISMGSendMapper">
+
+
+    <select id="selectISMGSendPage" resultType="org.springblade.system.vo.ISMGSendVO">
+    <if test="ismgSend.searchType==1">
+        WITH fi AS
+         (SELECT *
+            FROM (select pm_n,
+                         vest_date,
+                         delv,
+                         ismg_id,
+                         row_number() over(partition by vest_date,ismg_id order by delv desc) rn
+                    from (
+                          SELECT decode(a.pm_node, 'V1', '1', 'V2', 2, 3) pm_n,
+                                  a.vest_date,a.ismg_id,
+                                  sum(a.cmcc_delv + a.cu_delv + a.ct_delv) delv
+                           from pm_receipt a
+                           where 1=1
+                           and a.vest_date&gt;= to_date(#{ismgSend.beginDate},'yyyy-mm-dd')
+                            and a.vest_date&lt;= to_date(#{ismgSend.endDate},'yyyy-mm-dd')
+                           group by decode(a.pm_node, 'V1', '1', 'V2', 2, 3),a.ismg_id,
+                                     a.vest_date
+                          ))
+           where rn = 1)
+        select round(sum(delv) / sum(delv+undelv), 4) * 100 as succ_rate,
+               round(sum(undelv) / sum(delv+undelv), 4) * 100 as err_rate,
+              ismg_id,vest_date,sum(a.cmcc_delv + a.cmcc_undelv) as cmcc_sent,
+        		sum((a.cu_delv + a.cu_undelv)) as cu_sent,
+        		sum((a.ct_delv + a.ct_undelv)) as ct_sent,
+              sum(delv+undelv) sent_all,
+              sum(cmcc_delv) cmcc_delv,
+              sum(cmcc_undelv) cmcc_undelv,
+              sum(cu_delv) cu_delv,
+              sum(cu_undelv) cu_undelv,
+              sum(ct_delv) ct_delv,
+              sum(ct_undelv) ct_undelv,
+              max(ismg_name) ismg_name,
+              max(local_province) local_province,
+              decode(sum(delv),0,0,round(sum(decode(province,local_province,delv,0))/sum(delv)*100,2)) local_pct
+        from (
+        select a.ismg_id,a.vest_date,a.location_id,
+             max(c1.ismg_name) ismg_name,
+              max(b.province) province,
+              max(b.operator) operator,
+              max(c.channel_local_province) local_province,
+              sum(a.cmcc_delv+a.cu_delv+a.ct_delv)  delv,
+              sum(a.cmcc_undelv+a.cu_undelv+a.ct_undelv) undelv,
+              sum(cmcc_delv) cmcc_delv,
+              sum(cmcc_undelv) cmcc_undelv,
+              sum(cu_delv) cu_delv,
+              sum(cu_undelv) cu_undelv,
+              sum(ct_delv) ct_delv,
+              sum(ct_undelv) ct_undelv
+          from pm_receipt a,dic_location b,cm_channel_regular c,cm_ismg c1,fi
+        where 1=1 and a.vest_date&gt;= to_date(#{ismgSend.beginDate},'yyyy-mm-dd')
+        and a.vest_date&lt;= to_date(#{ismgSend.endDate},'yyyy-mm-dd')
+        <if test="ismgSend.ismgId != null">and a.ismg_id = #{ismgSend.ismgId} </if>
+         and c1.ismg_id=a.ismg_id
+          and a.ismg_id=c.ismg_id(+)
+          and a.location_id=b.location_id(+)
+          AND a.ismg_id = fi.ismg_id
+          AND a.vest_date = fi.vest_date
+          AND decode(a.pm_node,'V1','1','V2',2,3) = fi.pm_n
+        group by a.ismg_id,a.vest_date,a.location_id
+        ) a
+        group by ismg_id,vest_date
+    </if>
+    <if test="ismgSend.searchType==2">
+        select round(sum(delv) / sum(delv+undelv), 4) * 100 as succ_rate,
+        round(sum(undelv) / sum(delv+undelv), 4) * 100 as err_rate,
+        ismg_id,
+        #{ismgSend.beginDate} || '~' || #{ismgSend.endDate} vest_date,
+        sum(a.cmcc_delv + a.cmcc_undelv) as cmcc_sent,
+        sum((a.cu_delv + a.cu_undelv)) as cu_sent,
+        sum((a.ct_delv + a.ct_undelv)) as ct_sent,
+        sum(delv+undelv) sent_all,
+        sum(cmcc_delv) cmcc_delv,
+        sum(cmcc_undelv) cmcc_undelv,
+        sum(cu_delv) cu_delv,
+        sum(cu_undelv) cu_undelv,
+        sum(ct_delv) ct_delv,
+        sum(ct_undelv) ct_undelv,
+        max(ismg_name) ismg_name,
+        max(local_province) local_province,
+        decode(sum(delv),0,0,round(sum(decode(province,local_province,delv,0))/sum(delv)*100,2)) local_pct
+        from (
+            select a.ismg_id,a.vest_date,a.location_id,
+            max(c1.ismg_name) ismg_name,
+            max(b.province) province,
+            max(b.operator) operator,
+            max(c.channel_local_province) local_province,
+            sum(a.cmcc_delv+a.cu_delv+a.ct_delv) delv,
+            sum(a.cmcc_undelv+a.cu_undelv+a.ct_undelv) undelv,
+            sum(cmcc_delv) cmcc_delv,
+            sum(cmcc_undelv) cmcc_undelv,
+            sum(cu_delv) cu_delv,
+            sum(cu_undelv) cu_undelv,
+            sum(ct_delv) ct_delv,
+            sum(ct_undelv) ct_undelv
+            from pm_receipt a,dic_location b,cm_channel_regular c,cm_ismg c1,
+                (   SELECT *
+                FROM (select pm_n,
+                vest_date,
+                delv,
+                ismg_id,
+                row_number()
+                over(partition by vest_date,ismg_id order by delv desc)
+                rn
+                from (
+                SELECT decode(a.pm_node, 'V1', '1', 'V2', 2, 3) pm_n,
+                a.vest_date,a.ismg_id,
+                sum(a.cmcc_delv + a.cu_delv + a.ct_delv) delv
+                from pm_receipt a
+                where 1 = 1
+                and a.vest_date&gt;= to_date(#{ismgSend.beginDate},'yyyy-mm-dd')
+                and a.vest_date&lt;= to_date(#{ismgSend.endDate},'yyyy-mm-dd')
+                group by decode(a.pm_node, 'V1', '1', 'V2', 2, 3),a.ismg_id,
+                a.vest_date
+                )
+                )
+                where rn = 1
+                )
+            fi
+            where c1.ismg_id=a.ismg_id
+            <if test="ismgSend.ismgId != null">and a.ismg_id = #{ismgSend.ismgId} </if>
+            and a.vest_date&gt;= to_date(#{ismgSend.beginDate},'yyyy-mm-dd')
+            and a.vest_date&lt;= to_date(#{ismgSend.endDate},'yyyy-mm-dd')
+            and a.ismg_id=c.ismg_id(+)
+            and a.location_id=b.location_id(+)
+            AND a.ismg_id = fi.ismg_id
+            AND a.vest_date = fi.vest_date
+            AND decode(a.pm_node,'V1','1','V2',2,3) = fi.pm_n
+            group by a.ismg_id,a.vest_date,a.location_id
+        ) a
+        group by ismg_id
+    </if>
+    </select>
+
+
+
+</mapper>

@@ -42,5 +42,7 @@ public interface IIsmgService extends IService<Ismg> {
 
 	List<Ismg> dic(List<ChannelResource> channelResources);
 
+	List<Ismg> dic2();
+
 	String getSerialNum(String condition);
 }
