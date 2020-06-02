@@ -3,7 +3,7 @@
 <mapper namespace="org.springblade.system.mapper.ChannelResourceMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="channelResourceResultMap" type="org.springblade.system.entity.ChannelResource">
+    <resultMap id="channelResourceResultMap" type="org.springblade.system.vo.ChannelResourceVO">
         <id column="ID" property="id"/>
         <result column="SUPPLIER_TYPE" property="supplierType"/>
         <result column="SUPPLIER_ID" property="supplierId"/>
@@ -34,15 +34,15 @@
         <result column="REMARK" property="remark"/>
     </resultMap>
 
-    <resultMap id="channelResourceVO" type="org.springblade.system.vo.ChannelResourceVO" >
+    <resultMap id="channelResourceVO" type="org.springblade.system.vo.ChannelResourceVO">
     </resultMap>
 
 
     <select id="selectChannelResourcePage" resultMap="channelResourceVO">
-         SELECT t.*, s.dept_name supplierName
-          from EXT_CHANNEL_RESOURCE t
-          LEFT JOIN blade_user c ON c.id = t.supplier_id
-          LEFT JOIN blade_dept s  ON s.id = c.dept_id
+        SELECT t.*, s.dept_name supplierName
+        from EXT_CHANNEL_RESOURCE t
+        LEFT JOIN blade_user c ON c.id = t.supplier_id
+        LEFT JOIN blade_dept s ON s.id = c.dept_id
         <where>
             and c.is_deleted = 0
             <if test="channelResource.tenantCode != null">
@@ -67,6 +67,12 @@
                 and s.id = #{_parameter}
             </if>
         </where>
+    </select>
+
+    <select id="getISMGIdsById" parameterType="Integer" resultType="Integer">
+        select ISMG_ID
+        from EXT_CHANNEL_RESOURCE
+        where SUPPLIER_ID = #{id};
     </select>
 
 </mapper>

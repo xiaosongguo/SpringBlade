@@ -45,4 +45,7 @@ public interface ChannelResourceMapper extends BaseMapper<ChannelResource> {
 	 */
 	List<ChannelResourceVO> selectChannels(Long quoteId);
 
+	//通过供应商的id获得通道的ids
+	List<Integer> getISMGIdsById(Integer id);
+
 }

@@ -44,5 +44,7 @@ public interface IChannelResourceService extends IService<ChannelResource> {
 	boolean saveOrUpdateCustom(ChannelResource channelResource);
 
 	boolean removeCascadeByIds(List<Integer> toIntList);
+	//通过供应商的id获得通道的ids
+	List<Integer> getISMGIdsById(Integer id);
 
 }

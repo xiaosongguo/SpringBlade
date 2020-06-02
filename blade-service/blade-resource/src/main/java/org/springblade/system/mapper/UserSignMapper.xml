@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.system.mapper.UserSignMapper">
+
+
+    <select id="selectUserSignPage" resultType="org.springblade.system.vo.UserSignVO">
+        select t.sign_name, sum(t.delv) total
+        from rpt_sign_name t
+        where t.delv > = 0
+        and t.sign_name is not null
+        and t.ismg_id in
+        <foreach collection="userSign.ISMGIds" item="item" separator="," open="(" close=")">#{item}
+        </foreach>
+        <if test="userSign.signature != null">and t.sign_name like #{userSign.signature}</if>
+        <if test="userSign.signatures != null">and t.sign_name in
+            <foreach collection="userSign.signatures.split(',')" item="item" separator="," open="(" close=")">#{item}
+            </foreach>
+        </if>
+        <choose>
+            <when test="userSign.beginDate != null">and t.vest_date &gt;=to_date(#{userSign.beginDate},'yyyy-mm-dd')</when>
+            <otherwise>and t.vest_date &gt;=trunc(sysdate)</otherwise>
+        </choose>
+        <choose>
+            <when test="userSign.endDate != null">and t.vest_date &lt;=to_date(#{userSign.endDate},'yyyy-mm-dd')</when>
+            <otherwise>and t.vest_date &lt;=trunc(sysdate)</otherwise>
+        </choose>
+        group by t.sign_name
+        <if test="userSign.totalCnt != null">having sum(t.delv) &gt;= #{userSign.totalCnt}</if>
+    </select>
+
+</mapper>
