@@ -311,4 +311,10 @@ public class ChannelResourceServiceImpl extends ServiceImpl<ChannelResourceMappe
 //		channelRegular.setOperatorBalance();
 		return channelRegular;
 	}
+
+	//通过供应商的id获得通道的ids
+	@Override
+	public List<Integer> getISMGIdsById(Integer id){
+		return baseMapper.getISMGIdsById(id);
+	}
 }
