@@ -59,9 +59,15 @@
         sum(c.sys_money) sys_money,
         MAX(s.account) account
         FROM ext_channel_resource t
-        LEFT JOIN EXT_BILL c ON c.ismg_id = t.ismg_id
+        INNER JOIN EXT_BILL c ON c.ismg_id = t.ismg_id
         LEFT JOIN blade_user s ON s.id = c.user_id
         <where>
+            <if test="bill.beginDate !=null">
+                and c.bill_month &gt;= to_date(#{bill.beginDate},'yyyy-MM-dd')
+            </if>
+            <if test="bill.endDate !=null">
+                and c.bill_month &lt;= to_date(#{bill.endDate},'yyyy-MM-dd')
+            </if>
             <if test="bill.userId !=null">
                 and c.user_id = #{bill.userId}
             </if>
