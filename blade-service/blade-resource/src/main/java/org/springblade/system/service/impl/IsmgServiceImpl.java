@@ -55,6 +55,11 @@ public class IsmgServiceImpl extends ServiceImpl<IsmgMapper, Ismg> implements II
 	}
 
 	@Override
+	public List<Ismg> dic2() {
+		return baseMapper.dic2();
+	}
+
+	@Override
 	public String getSerialNum(String condition) {
 		Optional<String> optional = lambdaQuery()
 			.select(Ismg::getIsmgName)
