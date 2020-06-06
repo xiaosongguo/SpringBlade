@@ -8,9 +8,11 @@
         from rpt_sign_name t
         where t.delv > = 0
         and t.sign_name is not null
-        and t.ismg_id in
-        <foreach collection="userSign.ISMGIds" item="item" separator="," open="(" close=")">#{item}
-        </foreach>
+        <if test="!userSign.ISMGIds.isEmpty()">
+            and t.ismg_id in
+            <foreach collection="userSign.ISMGIds" item="item" separator="," open="(" close=")">#{item}
+            </foreach>
+        </if>
         <if test="userSign.signature != null">and t.sign_name like #{userSign.signature}</if>
         <if test="userSign.signatures != null">and t.sign_name in
             <foreach collection="userSign.signatures.split(',')" item="item" separator="," open="(" close=")">#{item}
