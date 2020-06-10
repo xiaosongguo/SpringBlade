@@ -72,6 +72,8 @@ public interface CommonConstant {
 
 
 	String SMSMAN = "smsman";
+	String ISMG3T = "ismg3t";
+	String MYCAT="mycat";
 
 
 
