@@ -36,14 +36,10 @@ import org.springblade.system.service.IChannelResourceService;
 import org.springblade.system.vo.ChannelResourceVO;
 import org.springblade.system.wrapper.ChannelResourceWrapper;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * 通道资源表 控制器
@@ -123,6 +119,7 @@ public class ChannelResourceController extends BladeController {
 		return R.status(channelResourceService.removeCascadeByIds(Func.toIntList(ids)));
 	}
 
+	//权限控制
 	private void supplierId(ChannelResourceVO channelResource) {
 		log.debug("当前角色：{}",SecureUtil.getUserRole());
 		if (authFun.hasAnyRole(RoleConstant.SUPPLIER)){
@@ -130,4 +127,31 @@ public class ChannelResourceController extends BladeController {
 		}
 		channelResource.setSupplierId(SecureUtil.getUserId());
 	}
+
+	/**
+	 * 批量新增 通道资源表
+	 */
+	@PostMapping("/submitAll")
+	@ApiOperation(value = "批量新增", notes = "传入channelResource")
+	public R submitAll(@RequestBody List<ChannelResourceVO> channelResources) {
+		int succ=0;
+		int fail=0;
+		for (ChannelResourceVO c:channelResources) {
+			R r=submit(c);
+			if(r.isSuccess()){
+				succ++;
+			}else {
+				fail++;
+			}
+		}
+		if(succ==0){
+			return R.fail("批量新增失败");
+		}else {
+			return R.success("批量新增成功:"+succ+" 失败:"+fail);
+		}
+
+	}
+
+
+
 }

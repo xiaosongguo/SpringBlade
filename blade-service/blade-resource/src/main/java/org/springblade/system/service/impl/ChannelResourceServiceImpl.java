@@ -100,7 +100,7 @@ public class ChannelResourceServiceImpl extends ServiceImpl<ChannelResourceMappe
 			//新增网签名
 			List<SignIsmg> signIsmgs = getSignIsmgs(ismg, channelResource);
 			signIsmgService.saveBatch(signIsmgs);
-//			//新增通道管理
+			//新增通道管理
 			ChannelRegular channelRegular = getChannelRegular(ismg, channelResource);
 			if (channelRegularService.save(channelRegular)){
 				//入redis
@@ -166,6 +166,7 @@ public class ChannelResourceServiceImpl extends ServiceImpl<ChannelResourceMappe
 			ismg.setBlackLevel2("0-4");
 			ismg.setSignName(channelResource.getSignature());
 			ismg.setChannelId(channelResource.getId());
+			//通道类型为联通时的额外设置
 			if (channelResource.getSupplierType()== OperatorTypeEnum.LT){
 				IsmgConfig otherConfig = new IsmgConfig();
 				otherConfig.setSgipSpno(channelResource.getAccessNumber());

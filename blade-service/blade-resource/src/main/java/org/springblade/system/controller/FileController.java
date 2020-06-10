@@ -68,7 +68,7 @@ public class FileController extends BladeController {
 			fileManager.setStatus(0);
 			fileManager.setFileType(fileType);
 		}
-
+		//保存到数据库
 		return this.fileManagerClient.upload(fileManager);
 	}
 
