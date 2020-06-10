@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Date;
 
 @TableName("EXT_FILE_MANAGER")
 @KeySequence(value = "SEQ_USER", clazz = Integer.class)
@@ -38,4 +39,8 @@ public class FileManager implements Serializable {
 
   @TableField("OWNER_ID")
   private Integer ownerId;
+
+  @TableField("CREATE_TIME")
+  private Date createTime;
+
 }
