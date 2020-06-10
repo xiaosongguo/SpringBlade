@@ -6,8 +6,8 @@
 package org.springblade.system.feign;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import org.springblade.system.service.IContactService;
 import org.springblade.system.entity.Contact;
+import org.springblade.system.service.IContactService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,10 +22,17 @@ public class ContactClient implements IContactClient {
         return this.service.list(Wrappers.<Contact>lambdaQuery().eq(Contact::getUserId, userId));
     }
 
-    @GetMapping({"/contact/one"})
-    public Contact one(Integer userId) {
-        return (Contact)this.service.getById(userId);
-    }
+
+
+	@GetMapping({"/contact/one"})
+	public Contact one(Integer userId) {
+		Contact c= (Contact)this.service.getOne(
+			Wrappers.<Contact>lambdaQuery().eq(Contact::getUserId,userId),false);
+		if(c==null){
+			c=new Contact();
+		}
+		return c;
+	}
 
     public ContactClient(final IContactService service) {
         this.service = service;

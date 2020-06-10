@@ -14,6 +14,7 @@ public interface IContactClient {
   @GetMapping({"/contact/byID"})
   List<Contact> list(@RequestParam("userId") Integer paramInteger);
 
+
 	@GetMapping({"/contact/one"})
-	public Contact one(Integer userId);
+	public Contact one(@RequestParam("userId") Integer userId);
 }
