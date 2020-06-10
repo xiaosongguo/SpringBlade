@@ -18,6 +18,16 @@ spring:
           password: ${smsman.datasource.dev.password}
           url: ${smsman.datasource.dev.url}
           driver-class-name: oracle.jdbc.driver.OracleDriver
+        ismg3t:
+          username: ismg3t
+          password: ismg3t
+          url: jdbc:oracle:thin:@192.168.0.242:1521/ora
+          driver-class-name: oracle.jdbc.driver.OracleDriver
+        mycat:
+          username: smsman
+          password: namsms
+          url: jdbc:mysql://192.168.3.231:8066/TESTDB
+          driver-class-name: com.mysql.jdbc.Driver
       p6spy: true
   redis:
     database: 5
