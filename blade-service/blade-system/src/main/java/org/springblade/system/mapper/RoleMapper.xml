@@ -36,7 +36,11 @@
             and tenant_code = #{param1}
         </if>
         <if test="param2!=null">
-            and role_alias in (#{param2})
+            and role_alias in
+            <foreach item="item" index="index" collection="param2.split(',')"
+                     open="(" separator="," close=")">
+                #{item}
+            </foreach>
         </if>
     </select>
 

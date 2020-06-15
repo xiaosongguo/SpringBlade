@@ -21,6 +21,9 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.exceptions.ApiException;
 import org.springblade.common.constant.CommonConstant;
 import org.springblade.core.mp.base.BaseServiceImpl;
+import org.springblade.core.secure.auth.AuthFun;
+import org.springblade.core.secure.utils.SecureUtil;
+import org.springblade.core.tool.constant.RoleConstant;
 import org.springblade.core.tool.utils.DigestUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.system.entity.Enterprise;
@@ -41,11 +44,36 @@ import java.util.List;
 @Service
 public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implements IUserService {
 
+	AuthFun authFun;
+
 	@Override
 	public boolean submit(User user) {
+		//对用户密码进行加密保存
 		if (Func.isNotEmpty(user.getPassword())) {
 			user.setPassword(DigestUtil.encrypt(user.getPassword()));
 		}
+		//对用户进行判断
+		String roleName=user.getRealName();
+		//代理渠道专员有创建供应商、游客的权限
+		if(authFun.hasRole(RoleConstant.AGENTEXECUTIVE)){
+			if(roleName!=RoleConstant.SUPPLIER&&roleName!=RoleConstant.TOURIST)
+				throw new ApiException("用户没有创建该角色的权限!");
+		}
+		//供应商总监拥有创建代理渠道专员、供应商、游客的权限
+		if(authFun.hasRole(RoleConstant.SUPPLIERMANAGEMENT)){
+			if(roleName!=RoleConstant.SUPPLIER&&roleName!=RoleConstant.TOURIST&&roleName!=RoleConstant.AGENTEXECUTIVE)
+				throw new ApiException("用户没有创建该角色的权限!");
+		}
+		//供应商、游客不拥有创建角色的权限
+		if(authFun.hasRole(RoleConstant.SUPPLIER)||authFun.hasRole(RoleConstant.TOURIST)){
+			throw new ApiException("游客和供应商没有创建角色的权限!");
+		}
+
+		//设置用户默认的租户
+		if(user.getTenantCode()==null){
+			user.setTenantCode(SecureUtil.getTenantCode());
+		}
+
 		Integer cnt = baseMapper.selectCount(Wrappers.<User>query().lambda().eq(User::getTenantCode, user.getTenantCode()).eq(User::getAccount, user.getAccount()));
 		if (cnt > 0) {
 			throw new ApiException("当前用户已存在!");

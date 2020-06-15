@@ -22,6 +22,7 @@ import lombok.AllArgsConstructor;
 import org.springblade.core.secure.auth.AuthFun;
 import org.springblade.core.secure.utils.SecureUtil;
 import org.springblade.core.tool.constant.BladeConstant;
+import org.springblade.core.tool.constant.RoleConstant;
 import org.springblade.core.tool.node.ForestNodeMerger;
 import org.springblade.system.entity.Role;
 import org.springblade.system.entity.RoleMenu;
@@ -58,14 +59,30 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
 	@Override
 	public List<RoleVO> tree(String tenantCode) {
 		String userRole = SecureUtil.getUserRole();
+		//以逗号分隔，在mapper语句中解析
 		String includeRole = null;
+		//不是管理员只能创建同样角色的账号
 		if (!authFun.denyAll()) {
 			includeRole = userRole;
 		}
+		//代理渠道专员有创建供应商、游客的权限
+		if(authFun.hasRole(RoleConstant.AGENTEXECUTIVE)){
+			includeRole= RoleConstant.SUPPLIER+","+RoleConstant.TOURIST;
+		}
+		//供应商总监拥有创建代理渠道专员、供应商、游客的权限
+		if(authFun.hasRole(RoleConstant.SUPPLIERMANAGEMENT)){
+			includeRole= RoleConstant.SUPPLIER+","+RoleConstant.TOURIST+","+RoleConstant.AGENTEXECUTIVE;
+		}
+		//供应商、游客不拥有创建角色的权限
+		if(authFun.hasRole(RoleConstant.SUPPLIER)||authFun.hasRole(RoleConstant.TOURIST)){
+			includeRole="";
+		}
+		//设置租户
 		if(authFun.isSupplier() || authFun.permitAll()){
 			tenantCode = BladeConstant.ADMIN_TENANT_CODE;
 		}
 
+		//设置为树的结构
 		return ForestNodeMerger.merge(baseMapper.tree(tenantCode, includeRole));
 	}
 
