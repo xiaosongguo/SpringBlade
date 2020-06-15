@@ -56,7 +56,7 @@
         SELECT TRUNC(c.bill_month, 'mm') bill_month,
         c.user_id,
         c.bill_status,
-        sum(c.sys_money) sys_money,
+        sum(c.sys_money) month_sys_money,
         MAX(s.account) account
         FROM ext_channel_resource t
         INNER JOIN EXT_BILL c ON c.ismg_id = t.ismg_id
@@ -69,7 +69,7 @@
                 and c.bill_month &lt;= to_date(#{bill.endDate},'yyyy-MM-dd')
             </if>
             <if test="bill.userId !=null">
-                and c.user_id = #{bill.userId}
+                and c.user_id in (select id from BLADE_USER start with id=#{bill.userId} connect by prior id=CREATE_USER)
             </if>
             and t.status > 0
         </where>

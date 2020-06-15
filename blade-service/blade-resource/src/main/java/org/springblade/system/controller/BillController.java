@@ -71,9 +71,14 @@ public class BillController extends BladeController {
 	@GetMapping("/settle")
 	@ApiOperation(value = "结算", notes = "传入bill", position = 8)
 	public R<IPage<BillVO>> settle(BillDTO bill, Query query) {
-		if (authFun.hasAnyRole(RoleConstant.SUPPLIER)){
+//		if (authFun.hasAnyRole(RoleConstant.SUPPLIER)){
+//			bill.setUserId(SecureUtil.getUserId());
+//		}
+		//除管理员外其它人只能访问自己的子用户
+		if(SecureUtil.getUserRole()!= RoleConstant.ADMIN){
 			bill.setUserId(SecureUtil.getUserId());
 		}
+
 		return R.data(billService.settle(Condition.getPage(query), bill));
 	}
 

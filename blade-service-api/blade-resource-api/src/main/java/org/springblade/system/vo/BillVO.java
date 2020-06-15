@@ -15,10 +15,10 @@
  */
 package org.springblade.system.vo;
 
-import org.springblade.system.entity.Bill;
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import io.swagger.annotations.ApiModel;
+import org.springblade.system.entity.Bill;
 
 /**
  * 通道账单表视图实体类
@@ -32,6 +32,11 @@ import io.swagger.annotations.ApiModel;
 public class BillVO extends Bill {
 	private static final long serialVersionUID = 1L;
 
+	//用户名
 	private String account;
+
+	//月结算量
+	private String monthSysMoney;
+
 
 }
