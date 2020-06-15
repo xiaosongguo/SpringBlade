@@ -66,7 +66,7 @@ public class ChannelResourceController extends BladeController {
 	* 详情
 	*/
 	@GetMapping("/detail")
-	@ApiOperation(value = "详情", notes = "传入channelResource", position = 1)
+	@ApiOperation(value = "通道详情", notes = "传入channelResource")
 	public R<ChannelResourceVO> detail(ChannelResource channelResource) {
 		ChannelResource detail = channelResourceService.getOne(Condition.getQueryWrapper(channelResource));
 		ChannelResourceWrapper channelResourceWrapper = new ChannelResourceWrapper(dictClient);
@@ -77,11 +77,15 @@ public class ChannelResourceController extends BladeController {
 	* 分页 通道资源表
 	*/
 	@GetMapping("/list")
-	@ApiOperation(value = "分页", notes = "传入channelResource", position = 2)
+	@ApiOperation(value = "分页", notes = "传入channelResource")
 	public R<IPage<ChannelResourceVO>> list(ChannelResourceVO channelResource, Query query) {
 		supplierId(channelResource);
-		if (this.authFun.hasAnyRole(RoleConstant.OPERATION)) {
-			channelResource.setSupplierId(1);
+//		if (this.authFun.hasAnyRole(RoleConstant.OPERATION)) {
+//			channelResource.setSupplierId(1);
+//		}
+		//用户没有管理员权限时只能查看子账户的通道资源
+		if(!authFun.hasRole(RoleConstant.ADMIN)){
+			channelResource.setSupplierId(SecureUtil.getUserId());
 		}
 		IPage<ChannelResourceVO> pages = channelResourceService.selectChannelResourcePage(Condition.getPage(query), channelResource);
 		return R.data(pages);
@@ -92,7 +96,7 @@ public class ChannelResourceController extends BladeController {
 	* 新增或修改 通道资源表
 	*/
 	@PostMapping("/submit")
-	@ApiOperation(value = "新增或修改", notes = "传入channelResource", position = 6)
+	@ApiOperation(value = "新增或修改", notes = "传入channelResource")
 	public R submit(@Valid @RequestBody ChannelResourceVO channelResource) {
 		supplierId(channelResource);
 		return R.status(channelResourceService.saveOrUpdateCustom(channelResource));
@@ -113,7 +117,7 @@ public class ChannelResourceController extends BladeController {
 	* 删除 通道资源表
 	*/
 	@PostMapping("/remove")
-	@ApiOperation(value = "删除", notes = "传入ids", position = 7)
+	@ApiOperation(value = "删除", notes = "传入ids")
 	@PreAuth(RoleConstant.HAS_ROLE_OPERATION)
 	public R remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {
 		return R.status(channelResourceService.removeCascadeByIds(Func.toIntList(ids)));
@@ -132,10 +136,11 @@ public class ChannelResourceController extends BladeController {
 	 * 批量新增 通道资源表
 	 */
 	@PostMapping("/submitAll")
-	@ApiOperation(value = "批量新增", notes = "传入channelResource")
+	@ApiOperation(value = "批量新增通道", notes = "传入channelResources")
 	public R submitAll(@RequestBody List<ChannelResourceVO> channelResources) {
 		int succ=0;
 		int fail=0;
+		//调用单个通道的新增
 		for (ChannelResourceVO c:channelResources) {
 			R r=submit(c);
 			if(r.isSuccess()){

@@ -15,6 +15,7 @@
  */
 package org.springblade.system.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -64,6 +65,7 @@ public class QuoteController extends BladeController {
 
 	private AuthFun authFun;
 
+	//配置权限
 	private void authFun(Quote quote) {
 		if (authFun.hasAnyRole(RoleConstant.SUPPLIER)){
 			quote.setSupplierId(SecureUtil.getUserId());
@@ -87,8 +89,15 @@ public class QuoteController extends BladeController {
 	@GetMapping("/list")
 	@ApiOperation(value = "分页", notes = "传入quote", position = 2)
 	public R<IPage<QuoteVO>> list(Quote quote, Query query) {
-		authFun(quote);
-		IPage<Quote> pages = quoteService.page(Condition.getPage(query), Condition.getQueryWrapper(quote));
+		//authFun(quote);
+		//管理员拥有全部的权限
+		boolean adminRole=false;
+		if (SecureUtil.getUserRole() == RoleConstant.ADMIN) adminRole=true;
+		//只能查询自己的子账号的报价信息,管理员可以查询全部
+		QueryWrapper queryWrapper = new QueryWrapper();
+		queryWrapper.inSql(!adminRole,"SUPPLIER_ID","select id from BLADE_USER start with id="+SecureUtil.getUserId()+" connect by prior id=CREATE_USER");
+		IPage<Quote> pages = quoteService.page(Condition.getPage(query), queryWrapper);
+		//对查询到的Quote类加入对应的QuoteDetail、FileManager类
 		QuoteWrapper quoteWrapper = new QuoteWrapper(dictClient,quoteDetailService,fileManagerClient);
 		return R.data(quoteWrapper.pageVO(pages));
 	}
