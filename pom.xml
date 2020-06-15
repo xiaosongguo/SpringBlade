@@ -87,6 +87,14 @@
             <artifactId>ojdbc6</artifactId>
             <version>11.2.0.4.0-atlassian-hosted</version>
         </dependency>
+        <!-- 引入mysql包，使用mycat -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.37</version>
+            <scope>runtime</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
