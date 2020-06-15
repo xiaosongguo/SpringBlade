@@ -17,6 +17,10 @@
 
     <select id="selectFileManagerPage" resultMap="fileManagerResultMap">
         select * from EXT_FILE_MANAGER where is_deleted = 0
+        <!-- 根据用户的id查找上传的文件 -->
+        <if test="fileManager.userId != null">
+            and USER_ID = #{fileManager.userId}
+        </if>
     </select>
 
 </mapper>
