@@ -28,6 +28,7 @@ import org.springblade.core.mp.support.Query;
 import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.auth.AuthFun;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.constant.RoleConstant;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.system.feign.IDictClient;
 import org.springblade.system.user.entity.User;
@@ -81,10 +82,9 @@ public class UserController {
 	@ApiOperation(value = "列表", notes = "传入account和realName", position = 2)
 	public R<IPage<UserVO>> list(@ApiIgnore @RequestParam Map<String, Object> user, Query query, BladeUser bladeUser) {
 		QueryWrapper<User> queryWrapper = Condition.getQueryWrapper(user, User.class);
+		//管理员拥有查询全部用户的权限,其他用户只拥有查询子用户的权限
 		Integer userId = bladeUser.getUserId();
-		if (!this.authFun.isSupplier() && !this.authFun.hasAnyRole(new String[] { "tourist" }))
-			userId = Integer.valueOf(1);
-		queryWrapper.last("start with id = " + userId + " connect by  prior id = create_user");
+		queryWrapper.last(bladeUser.getRoleId()!= RoleConstant.ADMIN,"start with id = " + userId + " connect by  prior id = create_user");
 		IPage<User> pages = this.userService.page(Condition.getPage(query), queryWrapper);
 		UserWrapper userWrapper = new UserWrapper(this.userService, this.dictClient);
 		return R.data(userWrapper.pageVO(pages));
